@@ -4,8 +4,8 @@
 --
 --  HOW TO USE
 --  * Local (MySQL Workbench): create a schema first, e.g.
---        CREATE DATABASE bstm_conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
---        USE bstm_conference;
+--        CREATE DATABASE conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+--        USE conference;
 --    then run this whole file.
 --  * InfinityFree: create the database in the control panel, open
 --    phpMyAdmin, select the database and Import this file.

@@ -53,8 +53,8 @@ Copy this whole folder to `C:\xampp\htdocs\bstm` (any folder name works).
 1. Open Workbench → connect to **Local instance** (`localhost:3306`, user `root`; XAMPP's root password is empty).
 2. Run:
    ```sql
-   CREATE DATABASE bstm_conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   USE bstm_conference;
+   CREATE DATABASE conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   USE conference;
    ```
 3. **File → Open SQL Script…** → `database/schema.sql` → click the ⚡ (Execute) button.
 4. *(Optional, for testing)* open `database/sample_data.sql` → Execute. This adds 3 sample conferences and about 130 sample participants.
@@ -63,7 +63,7 @@ Copy this whole folder to `C:\xampp\htdocs\bstm` (any folder name works).
 ### Step 4: Check `config.php`
 ```php
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'bstm_conference');
+define('DB_NAME', 'conference');
 define('DB_USER', 'root');
 define('DB_PASS', '');        // your MySQL password if you set one
 ```
