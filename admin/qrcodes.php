@@ -33,15 +33,35 @@ admin_header('QR Code Management', 'qrcodes');
     <p>Display or print these QR codes. Participants scan them to open the conference registration form.</p>
   </div>
   <div class="toolbar">
+    <?php if ($confs): ?>
     <form method="get">
-      <select class="input input-sm" name="conference" data-autosubmit style="min-width:240px" aria-label="Conference">
-        <option value="">All active conferences</option>
+      <select class="input input-sm" name="conference" data-autosubmit style="min-width:220px" aria-label="Show event">
+        <option value="">All active events</option>
         <?php foreach ($confs as $c): ?><option value="<?= (int) $c['id'] ?>" <?= $confId === (int) $c['id'] ? 'selected' : '' ?>><?= e($c['title']) ?><?= $c['is_archived'] ? ' (archived)' : '' ?></option><?php endforeach; ?>
       </select>
     </form>
-    <?php if ($confs): ?><button class="btn btn-primary btn-sm" data-open-modal="new-qr"><i class="bi bi-plus-lg"></i> Generate QR Code</button><?php endif; ?>
+    <button class="btn btn-outline btn-sm" data-open-modal="new-qr" title="Extra QR code for an existing event"><i class="bi bi-plus-lg"></i> Extra QR</button>
+    <?php endif; ?>
   </div>
 </div>
+
+<?php if (is_super()): ?>
+<div class="card mb-2">
+  <div class="card-body">
+    <form method="post" action="<?= e(url('admin/qr_action.php')) ?>" class="filters" style="grid-template-columns:2fr 1fr 1fr auto" data-once>
+      <?= csrf_field() ?><input type="hidden" name="action" value="quick_create">
+      <div class="field"><label for="qc-title"><i class="bi bi-qr-code"></i> Event Name<span class="req">*</span></label>
+        <input class="input" id="qc-title" name="title" required maxlength="190" placeholder="Type the event name, e.g. BSTM Seminar 2026" autocomplete="off"></div>
+      <div class="field"><label for="qc-date">Event Date <span class="opt">(optional)</span></label>
+        <input class="input" type="date" id="qc-date" name="date" value="<?= e(date('Y-m-d')) ?>"></div>
+      <div class="field"><label for="qc-venue">Venue <span class="opt">(optional)</span></label>
+        <input class="input" id="qc-venue" name="venue" maxlength="255" placeholder="To be announced"></div>
+      <div class="field"><button class="btn btn-primary" style="height:46px"><i class="bi bi-qr-code-scan"></i> Create QR Code</button></div>
+    </form>
+    <p class="small muted mt-1 mb-0">Creates the event and its QR code. Students who scan it go straight to the registration form. You can add more details later in Conference Management.</p>
+  </div>
+</div>
+<?php endif; ?>
 
 <?php if ($isLocal): ?>
   <div class="alert alert-warning"><i class="bi bi-exclamation-triangle-fill"></i><div>
@@ -56,7 +76,7 @@ admin_header('QR Code Management', 'qrcodes');
 <div class="alert alert-info"><i class="bi bi-shield-check"></i><div>QR codes contain only a random registration link – never any personal information. Deactivating a QR code immediately stops new registrations through it. Participants' <em>attendance</em> QR codes are separate and are shown on their own confirmation page.</div></div>
 
 <?php if (!$codes): ?>
-  <div class="card"><div class="card-body table-empty"><i class="bi bi-qr-code"></i>No QR codes to show. <?= $confs ? 'Generate one for a conference.' : 'Create a conference first.' ?></div></div>
+  <div class="card"><div class="card-body table-empty"><i class="bi bi-qr-code"></i>No QR codes yet. <?= is_super() ? 'Type an event name above and click “Create QR Code”.' : 'Ask the Super Admin to create an event.' ?></div></div>
 <?php endif; ?>
 
 <div class="grid-auto">

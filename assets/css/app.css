@@ -498,3 +498,5 @@ textarea.input { min-height: 90px; resize: vertical; }
 .table-compact th, .table-compact td { padding: .6rem .65rem; }
 .table .col-wide { min-width: 170px; }
 .table .col-name { min-width: 150px; }
+
+@media (max-width: 760px) { form.filters[style*="2fr 1fr 1fr auto"] { grid-template-columns: 1fr !important; } }

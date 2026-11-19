@@ -8,6 +8,38 @@ verify_csrf();
 
 $action = post('action');
 
+// Type an event name -> create the event + its registration QR code in one step.
+if ($action === 'quick_create') {
+    if (!is_super()) {
+        flash('error', 'Only a Super Admin can create events.');
+        redirect('admin/qrcodes.php');
+    }
+    $title = preg_replace('/\s+/', ' ', post('title'));
+    $venue = post('venue');
+    $date  = post('date');
+    if ($title === '' || mb_strlen($title) > 190) {
+        flash('error', 'Please type the event name (max 190 characters).');
+        redirect('admin/qrcodes.php');
+    }
+    $existing = q_row('SELECT id FROM conferences WHERE title = ? AND is_archived = 0', [$title]);
+    if ($existing) {
+        flash('info', 'That event already exists. Here is its QR code.');
+        redirect('admin/qrcodes.php?conference=' . $existing['id']);
+    }
+    $start = preg_match('/^\d{4}-\d{2}-\d{2}$/', $date) ? $date . ' 08:00:00' : date('Y-m-d') . ' 08:00:00';
+    $pdo = db();
+    $pdo->beginTransaction();
+    q('INSERT INTO conferences (academic_year_id, title, venue, start_datetime, created_by)
+       VALUES ((SELECT id FROM academic_years WHERE is_current = 1 LIMIT 1), ?, ?, ?, ?)',
+        [$title, mb_substr($venue !== '' ? $venue : 'To be announced', 0, 255), $start, $admin['id']]);
+    $confId = (int) $pdo->lastInsertId();
+    q('INSERT INTO qr_codes (conference_id, token, created_by) VALUES (?, ?, ?)', [$confId, random_token(), $admin['id']]);
+    $pdo->commit();
+    log_activity('conference_create', 'Created event "' . $title . '" with a registration QR code');
+    flash('success', 'Event "' . $title . '" created. Its QR code is ready below. Students can scan it to open the registration form.');
+    redirect('admin/qrcodes.php?conference=' . $confId);
+}
+
 if ($action === 'create') {
     $confId = (int) post('conference_id');
     require_conference_access($confId);
