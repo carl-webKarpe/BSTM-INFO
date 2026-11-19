@@ -8,6 +8,16 @@ define('APP_ROOT', dirname(__DIR__));
 
 require APP_ROOT . '/config.php';
 
+// Defaults for any setting missing from config.php
+foreach ([
+    'DB_HOST' => 'localhost', 'DB_PORT' => 3306, 'DB_NAME' => 'studentregister', 'DB_USER' => 'root', 'DB_PASS' => '',
+    'APP_DEBUG' => false, 'APP_TIMEZONE' => 'Asia/Manila', 'APP_URL' => '', 'APP_NAME' => 'Student Registration',
+] as $const => $default) {
+    if (!defined($const)) {
+        define($const, $default);
+    }
+}
+
 date_default_timezone_set(APP_TIMEZONE);
 
 if (APP_DEBUG) {
