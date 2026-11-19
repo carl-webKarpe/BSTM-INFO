@@ -55,8 +55,8 @@ if (is_post()) {
     if ($d['title'] === '' || mb_strlen($d['title']) > 190) $errors[] = 'Conference name is required (max 190 characters).';
     if ($d['venue'] === '' || mb_strlen($d['venue']) > 255) $errors[] = 'Venue is required (max 255 characters).';
     if (!$d['start_datetime']) $errors[] = 'Conference start date and time is required.';
-    if ($d['end_datetime'] && $d['start_datetime'] && $d['end_datetime'] < $d['start_datetime']) $errors[] = 'The end date/time must be after the start date/time.';
-    if ($d['registration_open'] && $d['registration_close'] && $d['registration_close'] <= $d['registration_open']) $errors[] = 'Registration closing must be after registration opening.';
+    if ($d['end_datetime'] && $d['start_datetime'] && $d['end_datetime'] < $d['start_datetime']) $errors[] = 'The end (' . fmt_datetime($d['end_datetime']) . ') must be after the start (' . fmt_datetime($d['start_datetime']) . '). Check the date and AM/PM.';
+    if ($d['registration_open'] && $d['registration_close'] && $d['registration_close'] <= $d['registration_open']) $errors[] = 'Registration closes (' . fmt_datetime($d['registration_close']) . ') must be later than registration opens (' . fmt_datetime($d['registration_open']) . '). Check the date and AM/PM, or leave both empty to keep registration open.';
     if ($d['participant_limit'] !== '' && (!ctype_digit((string) $d['participant_limit']) || (int) $d['participant_limit'] < 1)) $errors[] = 'Participant limit must be a positive whole number (or leave it blank for unlimited).';
     if (!$d['allow_student'] && !$d['allow_faculty'] && !$d['allow_guest']) $errors[] = 'Allow at least one participant type.';
     if (mb_strlen($d['attendance_categories']) > 500) $errors[] = 'Attendance categories are too long.';
