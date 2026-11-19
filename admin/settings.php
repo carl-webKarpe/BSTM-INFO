@@ -19,7 +19,7 @@ if (is_post()) {
         if (!$errors) {
             save_setting('welcome_message', mb_substr(post('welcome_message'), 0, 500));
             save_setting('public_base_url', $base);
-            save_setting('student_id_pattern', $pattern ?: '^[A-Za-z0-9-]{4,20}$');
+            save_setting('student_id_pattern', $pattern ?: '^[0-9]{7}$');
             save_setting('student_id_hint', mb_substr(post('student_id_hint'), 0, 190));
             log_activity('settings_update', 'Updated general system settings');
             flash('success', 'Settings saved.');
@@ -140,7 +140,7 @@ admin_header('System Settings', 'settings', 'Administration');
       <div class="field full"><label for="s-base">Public Base URL <span class="opt">(used inside QR codes)</span></label>
         <input class="input" id="s-base" name="public_base_url" value="<?= e(setting('public_base_url', '')) ?>" placeholder="<?= e(detected_base_url()) ?>">
         <div class="help">Leave empty to auto-detect (currently <code><?= e(detected_base_url()) ?></code>). For phone testing on your laptop use your Wi-Fi IP, e.g. <code>http://192.168.1.5<?= e(app_base_path()) ?></code>. Online, e.g. <code>https://yourname.infinityfreeapp.com</code>.</div></div>
-      <div class="field"><label for="s-pat">Student ID Format (regular expression)</label><input class="input" id="s-pat" name="student_id_pattern" value="<?= e(setting('student_id_pattern', '')) ?>" style="font-family:monospace"><div class="help">Default <code>^[A-Za-z0-9-]{4,20}$</code>. Example for “2023-00123”: <code>^\d{4}-\d{5}$</code></div></div>
+      <div class="field"><label for="s-pat">Student ID Format (regular expression)</label><input class="input" id="s-pat" name="student_id_pattern" value="<?= e(setting('student_id_pattern', '')) ?>" style="font-family:monospace"><div class="help">Default <code>^[0-9]{7}$</code> = exactly 7 digits, e.g. 1240075. Letters, numbers &amp; dashes (4–20): <code>^[A-Za-z0-9-]{4,20}$</code></div></div>
       <div class="field"><label for="s-hint">Student ID Hint (shown to students)</label><input class="input" id="s-hint" name="student_id_hint" value="<?= e(setting('student_id_hint', '')) ?>" maxlength="190"></div>
     </div>
   </div>

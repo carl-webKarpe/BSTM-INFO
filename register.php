@@ -302,6 +302,9 @@ $err = function ($k) use ($errors) {
 };
 $inv = fn($k) => isset($errors[$k]) ? ' is-invalid' : '';
 $selType = $data['type'] ?? (count($types) === 1 ? array_key_first($types) : '');
+$idPattern = (string) setting('student_id_pattern', '^[0-9]{7}$');
+// Show the number keypad on phones when the ID format is digits only.
+$idNumeric = (bool) preg_match('~^\^?(\[0-9\]|\\\\d)(\{\d+(,\d*)?\}|\+)\$?$~', $idPattern);
 $typeIcons = ['student' => 'mortarboard', 'faculty' => 'person-workspace', 'guest' => 'person-badge'];
 
 public_header('Register · ' . $conf['title']);
@@ -442,7 +445,8 @@ public_header('Register · ' . $conf['title']);
         <div class="form-grid">
           <div class="field full">
             <label for="id_number"><span data-label-student="Student ID Number" data-label-faculty="Employee ID Number" data-label-guest="ID Number">Student ID Number</span><span class="req" data-req-for="student,faculty">*</span><span class="opt" data-show="guest">(optional)</span></label>
-            <input class="input<?= $inv('id_number') ?>" id="id_number" name="id_number" value="<?= $val('id_number') ?>" maxlength="30" autocomplete="off" autocapitalize="characters" data-required-for="student,faculty" aria-describedby="id-help">
+            <input class="input<?= $inv('id_number') ?>" id="id_number" name="id_number" value="<?= $val('id_number') ?>" maxlength="30" autocomplete="off" autocapitalize="characters" data-required-for="student,faculty" aria-describedby="id-help"
+                   <?= $idNumeric ? 'inputmode="numeric"' : '' ?> data-pattern="<?= e($idPattern) ?>" data-pattern-msg="<?= e('Invalid ID number. ' . setting('student_id_hint', '')) ?>">
             <div class="help" id="id-help"><?= e(setting('student_id_hint', '')) ?></div>
             <?= $err('id_number') ?>
           </div>

@@ -298,10 +298,10 @@ function normalize_contact(string $raw): ?string
 
 function valid_id_number(string $id): bool
 {
-    $pattern = (string) setting('student_id_pattern', '^[A-Za-z0-9-]{4,20}$');
+    $pattern = (string) setting('student_id_pattern', '^[0-9]{7}$');
     $ok = @preg_match('~' . str_replace('~', '\~', $pattern) . '~', $id);
     if ($ok === false) { // broken pattern in settings – fall back to the default
-        $ok = preg_match('~^[A-Za-z0-9-]{4,20}$~', $id);
+        $ok = preg_match('~^[0-9]{7}$~', $id);
     }
     return $ok === 1 && strlen($id) <= 30;
 }

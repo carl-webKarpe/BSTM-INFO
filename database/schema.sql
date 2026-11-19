@@ -257,5 +257,5 @@ INSERT INTO academic_years (name, is_current) VALUES
 INSERT INTO settings (setting_key, setting_value) VALUES
 ('welcome_message',    'Welcome! Please complete the form below to register for this conference. It only takes about 2 minutes.'),
 ('public_base_url',    ''),
-('student_id_pattern', '^[A-Za-z0-9-]{4,20}$'),
-('student_id_hint',    '4 to 20 characters: letters, numbers and dashes only (e.g. 2023-00123)');
+('student_id_pattern', '^[0-9]{7}$'),
+('student_id_hint',    '7-digit ID number, numbers only (e.g. 1240075)');

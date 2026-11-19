@@ -104,6 +104,10 @@
       } else if (el.name === 'contact_number' && v) {
         var n = v.replace(/[\s\-().]/g, '');
         if (!/^(?:\+?63|0)?9\d{9}$/.test(n) && !/^\+\d{8,15}$/.test(n)) msg = 'Enter a valid mobile number, e.g. 09171234567.';
+      } else if (v && el.getAttribute('data-pattern')) {
+        try {
+          if (!new RegExp(el.getAttribute('data-pattern')).test(v.toUpperCase())) msg = el.getAttribute('data-pattern-msg') || 'Invalid format.';
+        } catch (err) { /* invalid pattern in settings: let the server decide */ }
       } else if (el.name === 'address' && v && v.length < 8) {
         msg = 'Please enter your complete address.';
       }
