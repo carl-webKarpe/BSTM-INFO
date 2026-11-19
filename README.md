@@ -1,4 +1,4 @@
-# Conference Student Registration & Information Management System
+# Student Registration & Information Management System
 
 A web application for school conferences. Students **scan a QR code → fill out the form → review → submit → get a confirmation**.
 Organizers manage conferences, QR codes, participants, attendance and reports from an admin dashboard.
@@ -53,8 +53,8 @@ Copy this whole folder to `C:\xampp\htdocs\bstm` (any folder name works).
 1. Open Workbench → connect to **Local instance** (`localhost:3306`, user `root`; XAMPP's root password is empty).
 2. Run:
    ```sql
-   CREATE DATABASE conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   USE conference;
+   CREATE DATABASE studentregister CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+   USE studentregister;
    ```
 3. **File → Open SQL Script…** → `database/schema.sql` → click the ⚡ (Execute) button.
 4. *(Optional, for testing)* open `database/sample_data.sql` → Execute. This adds 3 sample conferences and about 130 sample participants.
@@ -63,7 +63,7 @@ Copy this whole folder to `C:\xampp\htdocs\bstm` (any folder name works).
 ### Step 4: Check `config.php`
 ```php
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'conference');
+define('DB_NAME', 'studentregister');
 define('DB_USER', 'root');
 define('DB_PASS', '');        // your MySQL password if you set one
 ```
@@ -95,8 +95,8 @@ define('DB_PASS', '');        // your MySQL password if you set one
 
 ### Step 1: Create the hosting account and database
 1. Create an account at InfinityFree and add a website (e.g. `myconference.infinityfreeapp.com`).
-2. Control Panel → **MySQL Databases** → create a database (e.g. `conference`).
-   Note the **MySQL Hostname** (e.g. `sql123.infinityfree.com`), **database name** (e.g. `if0_12345678_conference`),
+2. Control Panel → **MySQL Databases** → create a database (e.g. `studentregister`).
+   Note the **MySQL Hostname** (e.g. `sql123.infinityfree.com`), **database name** (e.g. `if0_12345678_studentregister`),
    **username** (e.g. `if0_12345678`) and **password** (your vPanel / hosting account password).
 3. Click **phpMyAdmin** next to the database → **Import** → choose `database/schema.sql` → **Go**.
    (Only `schema.sql`. Do not import `sample_data.sql`.)
@@ -107,7 +107,7 @@ define('DB_PASS', '');        // your MySQL password if you set one
 ### Step 2: Edit `config.php` (on your laptop, before uploading)
 ```php
 define('DB_HOST', 'sql123.infinityfree.com');   // your MySQL Hostname
-define('DB_NAME', 'if0_12345678_conference');
+define('DB_NAME', 'if0_12345678_studentregister');
 define('DB_USER', 'if0_12345678');
 define('DB_PASS', 'your-hosting-password');
 define('APP_DEBUG', false);                      // hide error details online

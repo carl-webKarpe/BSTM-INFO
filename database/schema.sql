@@ -1,11 +1,11 @@
 -- =====================================================================
---  Conference Student Registration & Information Management System
+--  Student Registration & Information Management System
 --  Database schema (MySQL 5.7+ / MariaDB 10.3+)
 --
 --  HOW TO USE
 --  * Local (MySQL Workbench): create a schema first, e.g.
---        CREATE DATABASE conference CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
---        USE conference;
+--        CREATE DATABASE studentregister CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+--        USE studentregister;
 --    then run this whole file.
 --  * InfinityFree: create the database in the control panel, open
 --    phpMyAdmin, select the database and Import this file.

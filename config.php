@@ -8,7 +8,7 @@
  *  INFINITYFREE – change the DB_* values to the ones shown in
  *  Control Panel → MySQL Databases, e.g.
  *      DB_HOST = 'sql123.infinityfree.com'
- *      DB_NAME = 'if0_12345678_conference'
+ *      DB_NAME = 'if0_12345678_studentregister'
  *      DB_USER = 'if0_12345678'
  *      DB_PASS = 'your vPanel password'
  *  and set APP_DEBUG to false.
@@ -17,7 +17,7 @@
 
 define('DB_HOST', 'localhost');
 define('DB_PORT', 3306);
-define('DB_NAME', 'conference');
+define('DB_NAME', 'studentregister');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
@@ -33,4 +33,4 @@ define('APP_TIMEZONE', 'Asia/Manila');
 define('APP_URL', '');
 
 // Name shown in the header, page titles, printouts and exports.
-define('APP_NAME', 'Conference Registration');
+define('APP_NAME', 'Student Registration');

@@ -97,7 +97,7 @@ if (is_post()) {
         header('Content-Type: application/sql; charset=utf-8');
         header('Content-Disposition: attachment; filename="conference_backup_' . date('Ymd_His') . '.sql"');
         $pdo = db();
-        echo "-- Conference Registration System – database backup\n-- Created: " . date('Y-m-d H:i:s') . "\n\nSET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS = 0;\n\n";
+        echo "-- Student Registration System – database backup\n-- Created: " . date('Y-m-d H:i:s') . "\n\nSET NAMES utf8mb4;\nSET FOREIGN_KEY_CHECKS = 0;\n\n";
         foreach ($tables as $t) {
             $create = $pdo->query("SHOW CREATE TABLE `$t`")->fetch(PDO::FETCH_NUM)[1];
             echo "DROP TABLE IF EXISTS `$t`;\n$create;\n\n";

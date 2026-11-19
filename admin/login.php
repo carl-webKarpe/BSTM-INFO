@@ -60,7 +60,7 @@ $system = APP_NAME;
   <div class="login-art">
     <div class="brand" style="color:#fff;font-size:1.1rem"><?= e($system) ?></div>
     <div>
-      <h1>Conference Registration &amp; Information Management</h1>
+      <h1>Student Registration &amp; Information Management</h1>
       <p>Manage conferences, generate registration QR codes, monitor participants and track attendance – all in one place.</p>
       <div class="mt-3">
         <div class="feature"><i class="bi bi-qr-code"></i> QR code registration for every conference</div>

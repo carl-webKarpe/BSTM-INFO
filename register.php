@@ -310,7 +310,7 @@ $typeIcons = ['student' => 'mortarboard', 'faculty' => 'person-workspace', 'gues
 public_header('Register · ' . $conf['title']);
 ?>
 <section class="hero">
-  <div class="eyebrow"><i class="bi bi-qr-code-scan"></i> Conference Registration</div>
+  <div class="eyebrow"><i class="bi bi-qr-code-scan"></i> Student Registration</div>
   <h1><?= e($conf['title']) ?></h1>
   <p><?= e(setting('welcome_message', 'Please complete the form below to register.')) ?></p>
 </section>
