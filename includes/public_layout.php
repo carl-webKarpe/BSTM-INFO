@@ -3,9 +3,7 @@
 
 function public_header(string $title, array $opts = []): void
 {
-    $system = setting('system_name', 'Conference Registration');
-    $inst   = setting('institution_name', '');
-    $logo   = logo_url();
+    $system = APP_NAME;
     ?>
 <!doctype html>
 <html lang="en">
@@ -21,12 +19,11 @@ function public_header(string $title, array $opts = []): void
 <link rel="stylesheet" href="<?= asset('vendor/bootstrap-icons.min.css') ?>">
 <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 </head>
-<body class="public-body" data-org="<?= e($inst) ?>">
+<body class="public-body" data-org="<?= e($system) ?>">
 <header class="public-top">
   <div class="inner">
     <a class="brand" href="<?= e(url('index.php')) ?>">
-      <span class="brand-logo"><?php if ($logo): ?><img src="<?= e($logo) ?>" alt=""><?php else: ?><i class="bi bi-mortarboard-fill"></i><?php endif; ?></span>
-      <span><?= e($inst ?: $system) ?><small><?= e($system) ?></small></span>
+      <span style="font-size:1.1rem"><?= e($system) ?></span>
     </a>
   </div>
 </header>
@@ -40,7 +37,7 @@ function public_footer(array $scripts = []): void
     ?>
 </main>
 <footer class="public-footer">
-  &copy; <?= date('Y') ?> <?= e(setting('institution_name', '')) ?> · <?= e(setting('system_name', '')) ?>
+  &copy; <?= date('Y') ?> <?= e(APP_NAME) ?>
   · Your information is kept private and used only for conference registration.
 </footer>
 <?php foreach ($scripts as $s): ?>

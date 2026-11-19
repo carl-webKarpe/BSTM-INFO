@@ -54,7 +54,7 @@ function report_table(string $title, string $labelHead, array $rows, int $total)
 admin_header('Reports & Analytics', 'reports');
 ?>
 <div class="print-only" style="margin-bottom:12px">
-  <h2 style="margin:0"><?= e(setting('institution_name', '')) ?></h2>
+  <h2 style="margin:0"><?= e(APP_NAME) ?></h2>
   <div>Conference Participation Report — <?= e($confTitle) ?> · <?= e($period) ?> · Generated <?= date('M j, Y g:i A') ?></div>
 </div>
 

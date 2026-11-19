@@ -65,7 +65,7 @@ $initials = mb_substr($r['first_name'], 0, 1) . mb_substr($r['last_name'], 0, 1)
 
 admin_header('Participant Profile', 'participants', 'Participant Records');
 ?>
-<div class="print-only" style="margin-bottom:10px"><strong><?= e(setting('institution_name', '')) ?></strong> — Participant Information Sheet</div>
+<div class="print-only" style="margin-bottom:10px"><strong><?= e(APP_NAME) ?></strong> — Participant Information Sheet</div>
 
 <div class="card mb-2">
   <div class="card-body flex-between">

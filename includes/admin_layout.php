@@ -19,8 +19,7 @@ function admin_nav(): array
 function admin_header(string $title, string $active, string $crumb = ''): void
 {
     $admin  = current_admin();
-    $system = setting('system_name', 'Conference Registration');
-    $logo   = logo_url();
+    $system = APP_NAME;
     $initials = strtoupper(implode('', array_map(fn($p) => mb_substr($p, 0, 1), array_slice(preg_split('/\s+/', trim($admin['full_name'])), 0, 2))));
     ?>
 <!doctype html>
@@ -37,10 +36,9 @@ function admin_header(string $title, string $active, string $crumb = ''): void
 <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 <meta name="csrf-token" content="<?= e(csrf_token()) ?>">
 </head>
-<body class="admin-body" data-org="<?= e(setting('institution_name', '')) ?>">
+<body class="admin-body" data-org="<?= e($system) ?>">
 <aside class="sidebar" aria-label="Main navigation">
   <div class="sidebar-brand">
-    <span class="brand-logo"><?php if ($logo): ?><img src="<?= e($logo) ?>" alt=""><?php else: ?><i class="bi bi-mortarboard-fill"></i><?php endif; ?></span>
     <div><?= e($system) ?><small>Admin Dashboard</small></div>
   </div>
   <nav>

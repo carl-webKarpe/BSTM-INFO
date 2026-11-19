@@ -255,10 +255,7 @@ INSERT INTO academic_years (name, is_current) VALUES
 ('2026-2027', 1);
 
 INSERT INTO settings (setting_key, setting_value) VALUES
-('system_name',        'Conference Registration System'),
-('institution_name',   'Your School / University Name'),
 ('welcome_message',    'Welcome! Please complete the form below to register for this conference. It only takes about 2 minutes.'),
 ('public_base_url',    ''),
 ('student_id_pattern', '^[A-Za-z0-9-]{4,20}$'),
-('student_id_hint',    '4 to 20 characters: letters, numbers and dashes only (e.g. 2023-00123)'),
-('logo_path',          '');
+('student_id_hint',    '4 to 20 characters: letters, numbers and dashes only (e.g. 2023-00123)');

@@ -27,7 +27,7 @@ so no build step, Composer or npm is needed. Just copy the files.
 - QR Code Management: preview, download PNG, printable A4 poster, copy link, activate/deactivate, regenerate, scan & registration counts
 - Attendance Monitoring: camera QR scanning or manual search, duplicate check-in prevention, live counts, undo, attendance reports
 - Reports & Analytics: per-conference summary, by school / course / year / type / status, registration history; export to Excel & PDF, print
-- Activity Logs, Admin Accounts (Super Admin / Conference Admin), System Settings (logo, lists, Student ID format, database backup)
+- Activity Logs, Admin Accounts (Super Admin / Conference Admin), System Settings (lists, Student ID format, database backup)
 
 **Security:** password hashing (bcrypt), login lockout after 5 failed attempts, CSRF protection on every form, prepared statements (no SQL injection),
 output escaping (no XSS), role-based access, forced password change for new accounts, session timeout, `.htaccess` protection of config / internal folders.
@@ -128,7 +128,7 @@ After it's active, open your site with `https://`.
 
 ### Step 5: Go live
 1. Open `https://your-domain/admin/` and log in with `admin` / `Admin@123`, then change the password.
-2. **System Settings:** set the institution name and logo, and leave *Public Base URL* empty
+2. **System Settings:** leave *Public Base URL* empty
    (or set it to `https://your-domain`).
 3. Add your schools and courses (*System Settings → Schools, Courses & Lists*).
 4. Create a conference. Its QR code is generated automatically. Print it from **QR Code Management → Print**.
@@ -172,7 +172,6 @@ admin/               Admin dashboard pages
 includes/            Shared PHP (database, auth, helpers, layouts)
 assets/css, js       Styles and scripts
 assets/vendor        Bundled libraries (Chart.js, QR, xlsx, jsPDF, html5-qrcode, icons)
-assets/uploads       Uploaded logo
 database/schema.sql       Database tables + default admin
 database/sample_data.sql  Optional test data (local only)
 ```

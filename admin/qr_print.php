@@ -9,7 +9,6 @@ if (!$qr || !can_access_conference((int) $qr['conference_id'])) {
     redirect('admin/qrcodes.php');
 }
 $link = registration_url($qr['token']);
-$logo = logo_url();
 ?>
 <!doctype html>
 <html lang="en">
@@ -42,8 +41,7 @@ $logo = logo_url();
   <a class="btn btn-outline" href="<?= e(url('admin/qrcodes.php?conference=' . $qr['conference_id'])) ?>"><i class="bi bi-arrow-left"></i> Back</a>
 </div>
 <div class="poster">
-  <?php if ($logo): ?><img src="<?= e($logo) ?>" alt="" style="height:70px;margin-bottom:8px"><?php endif; ?>
-  <div class="org"><?= e(setting('institution_name', '')) ?></div>
+  <div class="org"><?= e(APP_NAME) ?></div>
   <h1><?= e($qr['title']) ?></h1>
   <div class="meta"><i class="bi bi-calendar3"></i> <?= e(fmt_conf_schedule($qr)) ?></div>
   <div class="meta"><i class="bi bi-geo-alt"></i> <?= e($qr['venue']) ?></div>

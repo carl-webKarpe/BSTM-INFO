@@ -11,41 +11,16 @@ if (is_post()) {
 
     // ------------------------------------------------------------ general settings
     if ($action === 'general') {
-        $name = post('system_name');
-        $inst = post('institution_name');
         $base = rtrim(post('public_base_url'), '/');
         $pattern = post('student_id_pattern');
-        if ($name === '') $errors[] = 'System name is required.';
         if ($base !== '' && !preg_match('~^https?://[^\s/$.?#][^\s]*$~i', $base)) $errors[] = 'Public Base URL must start with http:// or https://';
         if ($pattern !== '' && @preg_match('~' . str_replace('~', '\~', $pattern) . '~', '') === false) $errors[] = 'The Student ID pattern is not a valid regular expression.';
 
-        $logoPath = null;
-        if (!empty($_FILES['logo']['name'])) {
-            $f = $_FILES['logo'];
-            $info = $f['error'] === UPLOAD_ERR_OK ? @getimagesize($f['tmp_name']) : false;
-            $ext = $info ? ([IMAGETYPE_PNG => 'png', IMAGETYPE_JPEG => 'jpg', IMAGETYPE_WEBP => 'webp', IMAGETYPE_GIF => 'gif'][$info[2]] ?? null) : null;
-            if (!$ext) $errors[] = 'Logo must be a PNG, JPG, WEBP or GIF image.';
-            elseif ($f['size'] > 1024 * 1024) $errors[] = 'Logo must be smaller than 1 MB.';
-            else {
-                $dir = APP_ROOT . '/assets/uploads';
-                if (!is_dir($dir)) @mkdir($dir, 0755, true);
-                foreach (glob($dir . '/logo.*') ?: [] as $old) @unlink($old);
-                if (move_uploaded_file($f['tmp_name'], "$dir/logo.$ext")) $logoPath = "assets/uploads/logo.$ext";
-                else $errors[] = 'Could not save the logo. Check that assets/uploads is writable.';
-            }
-        }
         if (!$errors) {
-            save_setting('system_name', mb_substr($name, 0, 120));
-            save_setting('institution_name', mb_substr($inst, 0, 190));
             save_setting('welcome_message', mb_substr(post('welcome_message'), 0, 500));
             save_setting('public_base_url', $base);
             save_setting('student_id_pattern', $pattern ?: '^[A-Za-z0-9-]{4,20}$');
             save_setting('student_id_hint', mb_substr(post('student_id_hint'), 0, 190));
-            if ($logoPath) save_setting('logo_path', $logoPath);
-            if (isset($_POST['remove_logo'])) {
-                foreach (glob(APP_ROOT . '/assets/uploads/logo.*') ?: [] as $old) @unlink($old);
-                save_setting('logo_path', '');
-            }
             log_activity('settings_update', 'Updated general system settings');
             flash('success', 'Settings saved.');
             redirect('admin/settings.php');
@@ -142,7 +117,6 @@ $schools = lookup_schools(false);
 $courses = lookup_courses(false);
 $years   = lookup_academic_years();
 $ptypes  = lookup_participant_types();
-$logo    = logo_url();
 $counts  = q_row('SELECT (SELECT COUNT(*) FROM conferences) AS conferences, (SELECT COUNT(*) FROM conference_registrations) AS registrations,
                          (SELECT COUNT(*) FROM students) AS students, (SELECT COUNT(*) FROM activity_logs) AS logs');
 
@@ -157,13 +131,11 @@ admin_header('System Settings', 'settings', 'Administration');
 <?php if ($errors): ?><div class="alert alert-error"><i class="bi bi-exclamation-octagon-fill"></i><div><ul class="mt-0"><?php foreach ($errors as $er): ?><li><?= e($er) ?></li><?php endforeach; ?></ul></div></div><?php endif; ?>
 
 <?php if ($tab === 'general'): ?>
-<form method="post" enctype="multipart/form-data" class="grid-3">
+<form method="post" class="grid-3">
   <?= csrf_field() ?><input type="hidden" name="action" value="general">
   <div class="card span-2">
     <div class="card-header"><h3>General</h3></div>
     <div class="card-body form-grid">
-      <div class="field"><label for="s-name">System Name</label><input class="input" id="s-name" name="system_name" value="<?= e(setting('system_name', '')) ?>" required maxlength="120"></div>
-      <div class="field"><label for="s-inst">School / Institution Name</label><input class="input" id="s-inst" name="institution_name" value="<?= e(setting('institution_name', '')) ?>" maxlength="190"></div>
       <div class="field full"><label for="s-welcome">Welcome Message (registration page)</label><textarea class="input" id="s-welcome" name="welcome_message" rows="2" maxlength="500"><?= e(setting('welcome_message', '')) ?></textarea></div>
       <div class="field full"><label for="s-base">Public Base URL <span class="opt">(used inside QR codes)</span></label>
         <input class="input" id="s-base" name="public_base_url" value="<?= e(setting('public_base_url', '')) ?>" placeholder="<?= e(detected_base_url()) ?>">
@@ -173,15 +145,6 @@ admin_header('System Settings', 'settings', 'Administration');
     </div>
   </div>
   <div style="display:grid;gap:1.25rem;align-content:start">
-    <div class="card">
-      <div class="card-header"><h3>Logo</h3></div>
-      <div class="card-body">
-        <div class="brand-logo mb-2" style="width:80px;height:80px;font-size:2rem"><?php if ($logo): ?><img src="<?= e($logo) ?>" alt="Logo"><?php else: ?><i class="bi bi-mortarboard-fill"></i><?php endif; ?></div>
-        <input type="file" name="logo" accept="image/png,image/jpeg,image/webp,image/gif" class="input input-sm">
-        <div class="help mt-1">PNG / JPG / WEBP, max 1 MB. Square images look best.</div>
-        <?php if ($logo): ?><label class="check mt-1"><input type="checkbox" name="remove_logo"> Remove current logo</label><?php endif; ?>
-      </div>
-    </div>
     <button class="btn btn-primary btn-lg"><i class="bi bi-check-lg"></i> Save Settings</button>
   </div>
 </form>

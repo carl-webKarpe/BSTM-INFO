@@ -41,7 +41,7 @@ if (is_post()) {
         $error = 'Invalid username or password.';
     }
 }
-$system = setting('system_name', 'Conference Registration');
+$system = APP_NAME;
 ?>
 <!doctype html>
 <html lang="en">
@@ -58,10 +58,7 @@ $system = setting('system_name', 'Conference Registration');
 <body>
 <div class="login-wrap">
   <div class="login-art">
-    <div class="brand" style="color:#fff">
-      <span class="brand-logo" style="background:rgba(255,255,255,.15)"><i class="bi bi-mortarboard-fill"></i></span>
-      <span><?= e(setting('institution_name', '')) ?></span>
-    </div>
+    <div class="brand" style="color:#fff;font-size:1.1rem"><?= e($system) ?></div>
     <div>
       <h1>Conference Registration &amp; Information Management</h1>
       <p>Manage conferences, generate registration QR codes, monitor participants and track attendance – all in one place.</p>
@@ -76,7 +73,6 @@ $system = setting('system_name', 'Conference Registration');
   </div>
   <div class="login-form">
     <div class="box">
-      <div class="brand-logo mb-2" style="width:48px;height:48px;font-size:1.4rem"><i class="bi bi-shield-lock"></i></div>
       <h2 style="font-size:1.5rem">Admin Login</h2>
       <p class="muted">Sign in to the organizer dashboard.</p>
       <?= render_flashes() ?>

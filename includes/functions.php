@@ -255,11 +255,6 @@ function save_setting(string $key, string $value): void
     q('INSERT INTO settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)', [$key, $value]);
 }
 
-function logo_url(): string
-{
-    $p = (string) setting('logo_path', '');
-    return ($p !== '' && is_file(APP_ROOT . '/' . $p)) ? url($p) . '?v=' . filemtime(APP_ROOT . '/' . $p) : '';
-}
 
 // =================================================================
 // Tokens / references

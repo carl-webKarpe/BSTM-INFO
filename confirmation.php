@@ -44,8 +44,8 @@ public_header('Registration ' . $reg['reference_no']);
 <?php endif; ?>
 
 <div class="print-only" style="text-align:center;margin-bottom:12px">
-  <strong style="font-size:16px"><?= e(setting('institution_name', '')) ?></strong><br>
-  <span>Conference Registration Confirmation</span>
+  <strong style="font-size:16px"><?= e(APP_NAME) ?></strong><br>
+  <span>Registration Confirmation</span>
 </div>
 
 <div class="card status-screen" style="padding-bottom:1.5rem">

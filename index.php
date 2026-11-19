@@ -9,8 +9,8 @@ require __DIR__ . '/includes/public_layout.php';
 public_header('Welcome');
 ?>
 <section class="hero">
-  <div class="eyebrow"><i class="bi bi-mortarboard"></i> <?= e(setting('institution_name', '')) ?></div>
-  <h1><?= e(setting('system_name', 'Conference Registration System')) ?></h1>
+  <div class="eyebrow">Welcome</div>
+  <h1><?= e(APP_NAME) ?></h1>
   <p>Register for school conferences, seminars and academic events in just a few taps.</p>
 </section>
 

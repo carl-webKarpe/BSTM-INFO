@@ -31,3 +31,6 @@ define('APP_TIMEZONE', 'Asia/Manila');
 // e.g. 'https://myconference.infinityfreeapp.com'. Leave empty to
 // auto-detect. (This can also be set in Admin → System Settings.)
 define('APP_URL', '');
+
+// Name shown in the header, page titles, printouts and exports.
+define('APP_NAME', 'Conference Registration');
