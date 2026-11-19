@@ -1,0 +1,22 @@
+# ------------------------------------------------------------------
+#  Security rules (works on XAMPP and InfinityFree)
+# ------------------------------------------------------------------
+Options -Indexes
+DirectoryIndex index.php
+
+# Block direct access to configuration, docs and SQL files
+<FilesMatch "^(config\.php|.*\.sql|.*\.md|\.git.*|\.htaccess)$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
+
+# Block access to internal folders
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(includes|database|\.git)(/|$) - [F,L]
+</IfModule>
