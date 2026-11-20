@@ -45,7 +45,7 @@ admin_header($c['title'], 'conferences', 'Conference Management');
             <button name="action" value="archive" data-confirm="Archive this conference? Registration will close and it will move to the Archived tab."><i class="bi bi-archive"></i> Archive conference</button>
           <?php endif; ?>
           <hr>
-          <button name="action" value="delete" class="danger" data-confirm="Permanently delete this conference? This cannot be undone."><i class="bi bi-trash"></i> Delete conference</button>
+          <button name="action" value="delete" class="danger" data-confirm="Permanently delete this conference<?= $sum['total'] + $sum['cancelled'] ? ' and its ' . ($sum['total'] + $sum['cancelled']) . ' registration(s)' : '' ?>? This cannot be undone."><i class="bi bi-trash"></i> Delete conference</button>
         <?php endif; ?>
       </div>
     </form>

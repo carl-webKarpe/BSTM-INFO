@@ -7,7 +7,8 @@ $search = get('q');
 
 $sql = "SELECT c.*, ay.name AS ay_name,
           (SELECT COUNT(*) FROM conference_registrations x WHERE x.conference_id = c.id AND x.status <> 'cancelled' AND x.is_archived = 0) AS reg_count,
-          (SELECT COUNT(*) FROM attendance_records a WHERE a.conference_id = c.id) AS att_count
+          (SELECT COUNT(*) FROM attendance_records a WHERE a.conference_id = c.id) AS att_count,
+          (SELECT COUNT(*) FROM conference_registrations y WHERE y.conference_id = c.id) AS all_regs
         FROM conferences c LEFT JOIN academic_years ay ON ay.id = c.academic_year_id
         WHERE c.is_archived = ?" . conf_scope('c.id');
 $params = [$tab === 'archived' ? 1 : 0];
@@ -73,7 +74,15 @@ admin_header('Conference Management', 'conferences');
       <a class="btn btn-primary btn-sm" href="<?= e(url('admin/conference_view.php?id=' . $c['id'])) ?>"><i class="bi bi-eye"></i> View</a>
       <a class="btn btn-outline btn-sm" href="<?= e(url('admin/conference_form.php?id=' . $c['id'])) ?>"><i class="bi bi-pencil"></i> Edit</a>
       <a class="btn btn-outline btn-sm" href="<?= e(url('admin/qrcodes.php?conference=' . $c['id'])) ?>"><i class="bi bi-qr-code"></i> QR</a>
-      <a class="btn btn-outline btn-sm" href="<?= e(url('admin/participants.php?conference=' . $c['id'])) ?>"><i class="bi bi-people"></i></a>
+      <a class="btn btn-outline btn-sm" href="<?= e(url('admin/participants.php?conference=' . $c['id'])) ?>" title="Participants"><i class="bi bi-people"></i></a>
+      <?php if (is_super()):
+          $n = (int) $c['all_regs'];
+          $msg = 'Permanently DELETE "' . $c['title'] . '"?' . ($n ? "\n\nThis will also permanently delete $n registration" . ($n === 1 ? '' : 's') . ', their attendance records and the QR codes of this conference.' : '') . "\n\nThis cannot be undone."; ?>
+        <form method="post" action="<?= e(url('admin/conference_action.php')) ?>" class="conf-del">
+          <?= csrf_field() ?><input type="hidden" name="id" value="<?= (int) $c['id'] ?>"><input type="hidden" name="return" value="list">
+          <button class="btn btn-outline btn-sm btn-del" name="action" value="delete" data-confirm="<?= e($msg) ?>" title="Delete conference"><i class="bi bi-trash"></i> Delete</button>
+        </form>
+      <?php endif; ?>
     </div>
   </div>
 <?php endforeach; ?>

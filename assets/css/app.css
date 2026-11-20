@@ -406,7 +406,8 @@ textarea.input { min-height: 90px; resize: vertical; }
 .checkin-result.warn { border-color: #FDE68A; background: var(--warning-50); }
 .checkin-result.bad { border-color: #FECACA; background: var(--danger-50); }
 
-.tabs { display: flex; gap: .3rem; border-bottom: 1px solid var(--gray-200); margin-bottom: 1rem; overflow-x: auto; }
+.tabs { display: flex; gap: .3rem; border-bottom: 1px solid var(--gray-200); margin-bottom: 1rem; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
 .tabs a, .tabs button {
   padding: .65rem .95rem; border: 0; background: none; font: inherit; font-weight: 600; font-size: .9rem; cursor: pointer;
   color: var(--gray-500); border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; text-decoration: none !important;
@@ -744,3 +745,8 @@ textarea.input { min-height: 90px; resize: vertical; }
   .table-cards tr:has(.table-empty) { display: block; border: 0; }
 }
 @media (max-width: 640px) { .table-wrap:has(.table-cards) { overflow: visible; } }
+
+/* conference cards: delete button pushed to the right */
+.conf-del { margin: 0 0 0 auto; }
+.btn-del { color: var(--danger); border-color: #fecaca; }
+.btn-del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }

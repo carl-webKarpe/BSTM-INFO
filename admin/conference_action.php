@@ -34,13 +34,15 @@ switch (post('action')) {
     case 'delete':
         require_super();
         $count = (int) q_val('SELECT COUNT(*) FROM conference_registrations WHERE conference_id = ?', [$id]);
-        if ($count > 0) {
-            flash('error', "This conference has $count registration(s) and cannot be deleted. Archive it instead to keep the records.");
-            break;
-        }
+        $pdo = db();
+        $pdo->beginTransaction();
+        // registrations, attendance, QR codes and admin assignments are removed by the foreign keys (ON DELETE CASCADE)
         q('DELETE FROM conferences WHERE id = ?', [$id]);
-        log_activity('conference_delete', 'Deleted conference "' . $c['title'] . '"');
-        flash('success', 'Conference deleted.');
+        // remove people who no longer have any registration
+        q('DELETE FROM students WHERE NOT EXISTS (SELECT 1 FROM conference_registrations r WHERE r.student_id = students.id)');
+        $pdo->commit();
+        log_activity('conference_delete', 'Deleted conference "' . $c['title'] . '"' . ($count ? " and its $count registration(s)" : ''));
+        flash('success', 'Conference "' . $c['title'] . '" deleted' . ($count ? " together with $count registration(s)." : '.'));
         redirect('admin/conferences.php');
 }
 redirect('admin/conference_view.php?id=' . $id);
