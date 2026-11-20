@@ -108,8 +108,6 @@
         try {
           if (!new RegExp(el.getAttribute('data-pattern')).test(v.toUpperCase())) msg = el.getAttribute('data-pattern-msg') || 'Invalid format.';
         } catch (err) { /* invalid pattern in settings: let the server decide */ }
-      } else if (el.name === 'address' && v && v.length < 8) {
-        msg = 'Please enter your complete address.';
       }
       if (msg) {
         setError(el, msg);
@@ -126,6 +124,59 @@
 
   applyType();
   form.querySelectorAll('select[data-other]').forEach(applyOther);
+  initAddress();
+
+  // ---------------------------------------------------------------- address dropdowns
+  function initAddress() {
+    var box = document.getElementById('address-fields');
+    if (!box) return;
+    var src = box.getAttribute('data-src');
+    var prov = document.getElementById('addr_province');
+    var city = document.getElementById('addr_city');
+    var brgy = document.getElementById('addr_barangay');
+    var cache = {}, cities = [];
+
+    function fill(sel, items, placeholder, selected) {
+      sel.innerHTML = '';
+      var o = document.createElement('option');
+      o.value = ''; o.textContent = placeholder;
+      sel.appendChild(o);
+      items.forEach(function (name) {
+        var opt = document.createElement('option');
+        opt.value = name; opt.textContent = name;
+        if (name === selected) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      sel.disabled = items.length === 0;
+    }
+
+    function loadCities(selCity, selBrgy) {
+      fill(brgy, [], '— Select city first —');
+      if (!prov.value) { fill(city, [], '— Select province first —'); return; }
+      fill(city, [], 'Loading…'); city.disabled = true;
+      var key = prov.value;
+      var done = function (data) {
+        if (prov.value !== key) return;
+        cities = data;
+        fill(city, data.map(function (c) { return c.n; }), '— Select city / municipality —', selCity);
+        if (selCity) loadBarangays(selBrgy);
+      };
+      if (cache[key]) { done(cache[key]); return; }
+      fetch(src + encodeURIComponent(key) + '.json')
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (d) { cache[key] = d; done(d); })
+        .catch(function () { fill(city, [], 'Could not load – check your connection'); });
+    }
+
+    function loadBarangays(selBrgy) {
+      var c = cities.filter(function (x) { return x.n === city.value; })[0];
+      fill(brgy, c ? c.b : [], c ? '— Select barangay —' : '— Select city first —', selBrgy);
+    }
+
+    prov.addEventListener('change', function () { loadCities(); });
+    city.addEventListener('change', function () { loadBarangays(); });
+    if (prov.value) loadCities(box.getAttribute('data-city'), box.getAttribute('data-barangay'));
+  }
 
   var es = document.getElementById('error-summary');
   if (es) {

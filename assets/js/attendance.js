@@ -46,7 +46,7 @@ function initAttendance(cfg) {
     if (!p) return '';
     return '<div class="cell-title" style="font-size:1.05rem">' + esc(p.name) + '</div>' +
       '<div class="small muted">' + esc(p.id_number) + ' · ' + esc(p.reference_no) + ' · ' + esc(p.type) + '</div>' +
-      '<div class="small muted">' + esc(p.school) + (p.course ? ' · ' + esc(p.course) : '') + (p.year ? ' · ' + esc(p.year) : '') + '</div>';
+      '<div class="small muted">' + (p.course ? esc(p.course) : '—') + (p.year ? ' · ' + esc(p.year) : '') + '</div>';
   }
 
   function showResult(res, method, code) {
@@ -76,7 +76,7 @@ function initAttendance(cfg) {
       tr.setAttribute('data-id', res.person.id);
       tr.innerHTML = '<td><a class="cell-title" href="' + esc(res.person.profile_url) + '">' + esc(res.person.name) + '</a><div class="cell-sub">' + esc(res.person.reference_no) + '</div></td>' +
         '<td>' + esc(res.person.id_number) + '</td><td class="hide-sm"><span class="badge badge-muted">' + esc(res.person.type) + '</span></td>' +
-        '<td class="hide-sm small">' + esc(res.person.school) + '<div class="cell-sub">' + esc(res.person.course) + ' ' + esc(res.person.year) + '</div></td>' +
+        '<td class="hide-sm small">' + esc(res.person.course || '—') + '<div class="cell-sub">' + esc(res.person.year) + '</div></td>' +
         '<td class="nowrap small">' + esc(res.person.checked_in_at) + '<div class="cell-sub">Just now</div></td>' +
         '<td class="text-right"><button class="btn btn-ghost btn-sm" data-undo="' + res.person.id + '"><i class="bi bi-arrow-counterclockwise"></i> Undo</button></td>';
       tr.style.background = '#F0FDF4';

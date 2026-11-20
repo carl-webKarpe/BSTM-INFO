@@ -105,7 +105,7 @@ admin_header('Attendance Monitoring', 'attendance');
   </div>
   <div class="table-wrap">
     <table class="table" id="att-table">
-      <thead><tr><th>Participant</th><th>ID Number</th><th class="hide-sm">Type</th><th class="hide-sm">School / Course</th><th><?= $view === 'in' ? 'Checked In' : 'Status' ?></th><th class="text-right">Action</th></tr></thead>
+      <thead><tr><th>Participant</th><th>ID Number</th><th class="hide-sm">Type</th><th class="hide-sm">Course / Year</th><th><?= $view === 'in' ? 'Checked In' : 'Status' ?></th><th class="text-right">Action</th></tr></thead>
       <tbody>
       <?php if (!$rows) echo empty_row(6, $view === 'in' ? 'No one has checked in yet.' : 'Everyone has checked in. 🎉', $view === 'in' ? 'person-check' : 'emoji-smile'); ?>
       <?php foreach ($rows as $r): ?>
@@ -113,7 +113,7 @@ admin_header('Attendance Monitoring', 'attendance');
           <td><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $r['id'])) ?>"><?= e(full_name($r)) ?></a><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
           <td><?= e($r['id_number'] ?: '—') ?></td>
           <td class="hide-sm"><?= type_badge($r['type_name']) ?></td>
-          <td class="hide-sm small"><?= e(school_label($r)) ?><div class="cell-sub"><?= e($r['course_code'] ?: ($r['course_other'] ?: '')) ?> <?= e($r['year_level'] ?: '') ?></div></td>
+          <td class="hide-sm small"><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?><div class="cell-sub"><?= e($r['year_level'] ?: '') ?></div></td>
           <?php if ($view === 'in'): ?>
             <td class="nowrap small"><?= e(fmt_datetime($r['checked_in_at'])) ?><div class="cell-sub"><?= $r['checkin_method'] === 'qr' ? 'QR scan' : 'Manual' ?></div></td>
             <td class="text-right"><button class="btn btn-ghost btn-sm" data-undo="<?= (int) $r['id'] ?>" title="Undo check-in"><i class="bi bi-arrow-counterclockwise"></i> Undo</button></td>

@@ -16,7 +16,6 @@ if ($from)   { $where .= ' AND r.registered_at >= ?'; $params[] = "$from 00:00:0
 if ($to)     { $where .= ' AND r.registered_at <= ?'; $params[] = "$to 23:59:59"; }
 
 $sum     = stats_summary($where, $params);
-$bySchool = stats_by_school($where, $params);
 $byCourse = stats_by_course($where, $params);
 $byYear   = stats_by_year($where, $params);
 $byType   = stats_by_type($where, $params);
@@ -108,8 +107,6 @@ admin_header('Reports & Analytics', 'reports');
 </div>
 
 <div class="grid-2 mb-3">
-  <div class="card"><div class="card-header"><h3>Participants by School / Institution</h3></div>
-    <div class="card-body"><div class="chart-box"><canvas id="c-school"></canvas></div></div><?= report_table('By School', 'School / Institution', $bySchool, $sum['total']) ?></div>
   <div class="card"><div class="card-header"><h3>Participants by Course / Program</h3></div>
     <div class="card-body"><div class="chart-box"><canvas id="c-course"></canvas></div></div><?= report_table('By Course', 'Course / Program', $byCourse, $sum['students'] + $sum['faculty']) ?></div>
   <div class="card"><div class="card-header"><h3>Students by Year Level</h3></div>
@@ -143,7 +140,6 @@ admin_header('Reports & Analytics', 'reports');
 <?php
 $cd = fn($rows) => json_encode(chart_data($rows));
 $js = 'var d;'
-    . 'd=' . $cd(array_slice($bySchool, 0, 10)) . ';makeChart("c-school","hbar",d[0],d[1]);'
     . 'd=' . $cd(array_slice($byCourse, 0, 10)) . ';makeChart("c-course","hbar",d[0],d[1],{colors:"#172554"});'
     . 'd=' . $cd($byYear) . ';makeChart("c-year","bar",d[0],d[1],{colors:"#16A34A"});'
     . 'd=' . $cd($byType) . ';makeChart("c-type","doughnut",d[0],d[1]);'

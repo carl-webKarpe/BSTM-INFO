@@ -7,15 +7,14 @@
 function participant_sort_columns(): array
 {
     return [
-        'id_number'  => 's.id_number',
-        'name'       => 's.last_name, s.first_name',
-        'school'     => 'COALESCE(sc.name, r.school_other)',
-        'course'     => 'COALESCE(co.code, r.course_other)',
-        'year'       => 'r.year_level',
-        'type'       => 'pt.id',
-        'conference' => 'c.title',
-        'date'       => 'r.registered_at',
-        'status'     => 'r.status',
+        'id_number'  => ['s.id_number'],
+        'name'       => ['s.last_name', 's.first_name'],
+        'course'     => ['COALESCE(co.code, r.course_other)'],
+        'year'       => ['r.year_level'],
+        'type'       => ['pt.id'],
+        'conference' => ['c.title'],
+        'date'       => ['r.registered_at'],
+        'status'     => ['r.status'],
     ];
 }
 
@@ -44,12 +43,6 @@ function participant_filters(array $in): array
     } elseif (ctype_digit($g('course'))) {
         $where .= ' AND r.course_id = ?';
         $params[] = (int) $g('course');
-    }
-    if ($g('school') === 'other') {
-        $where .= ' AND r.school_id IS NULL AND r.school_other IS NOT NULL';
-    } elseif (ctype_digit($g('school'))) {
-        $where .= ' AND r.school_id = ?';
-        $params[] = (int) $g('school');
     }
     if (in_array($g('year'), year_levels(), true)) {
         $where .= ' AND r.year_level = ?';
@@ -80,7 +73,7 @@ function participant_filters(array $in): array
     $cols = participant_sort_columns();
     $sort = isset($cols[$g('sort')]) ? $g('sort') : 'date';
     $dir  = strtolower($g('dir')) === 'asc' ? 'ASC' : (strtolower($g('dir')) === 'desc' ? 'DESC' : ($sort === 'date' ? 'DESC' : 'ASC'));
-    $order = implode(', ', array_map(fn($c) => "$c $dir", explode(', ', $cols[$sort]))) . ', r.id DESC';
+    $order = implode(', ', array_map(fn($c) => "$c $dir", $cols[$sort])) . ', r.id DESC';
 
     return [$where, $params, $order];
 }

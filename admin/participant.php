@@ -27,10 +27,9 @@ $sections = [
     ],
     'Contact Information' => [
         'Contact Number' => $r['contact_number'],
-        'Complete Address' => $r['address'],
+        'Address' => $r['address'],
     ],
     'Academic Information' => array_filter([
-        'School / Institution' => school_label($r),
         ($r['type_code'] === 'faculty' ? 'Department / Program' : 'Course / Program') => $isGuest ? null : course_label($r),
         'Year Level' => $r['type_code'] === 'student' ? ($r['year_level'] ?: '—') : null,
         'Section' => $r['type_code'] === 'student' ? ($r['section'] ?: '—') : null,

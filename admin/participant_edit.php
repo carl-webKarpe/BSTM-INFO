@@ -96,14 +96,12 @@ admin_header('Edit Participant', 'participants', 'Participant Records');
         <div class="field"><label>First Name<span class="req">*</span></label><input class="input" name="first_name" value="<?= e($d['first_name']) ?>" required maxlength="80"></div>
         <div class="field"><label>Middle Name</label><input class="input" name="middle_name" value="<?= e($d['middle_name']) ?>" maxlength="80"></div>
         <div class="field"><label>Contact Number<span class="req">*</span></label><input class="input" name="contact_number" value="<?= e($d['contact_number']) ?>" required maxlength="20"></div>
-        <div class="field full"><label>Complete Address<span class="req">*</span></label><textarea class="input" name="address" rows="2" required maxlength="255"><?= e($d['address']) ?></textarea></div>
+        <div class="field full"><label>Address<span class="req">*</span></label><textarea class="input" name="address" rows="2" required maxlength="255"><?= e($d['address']) ?></textarea></div>
       </div>
     </div>
     <div class="card">
       <div class="card-header"><h3><i class="bi bi-mortarboard"></i> Academic Information</h3></div>
       <div class="card-body form-grid">
-        <div class="field"><label>School / Institution</label><select class="input" name="school_id"><option value="">— Other / none —</option><?php foreach ($schools as $s): ?><option value="<?= (int) $s['id'] ?>" <?= $sel($s['id'], $d['school_id']) ?>><?= e($s['name']) ?></option><?php endforeach; ?></select></div>
-        <div class="field"><label>Other School (if not in list)</label><input class="input" name="school_other" value="<?= e($d['school_other']) ?>" maxlength="190"></div>
         <div class="field"><label>Course / Program</label><select class="input" name="course_id"><option value="">— Other / none —</option><?php foreach ($courses as $c): ?><option value="<?= (int) $c['id'] ?>" <?= $sel($c['id'], $d['course_id']) ?>><?= e($c['code'] . ' – ' . $c['name']) ?></option><?php endforeach; ?></select></div>
         <div class="field"><label>Other Course (if not in list)</label><input class="input" name="course_other" value="<?= e($d['course_other']) ?>" maxlength="190"></div>
         <div class="field"><label>Year Level <span class="opt">(students)</span></label><select class="input" name="year_level"><option value="">—</option><?php foreach (year_levels() as $y): ?><option <?= $sel($y, $d['year_level']) ?>><?= e($y) ?></option><?php endforeach; ?></select></div>

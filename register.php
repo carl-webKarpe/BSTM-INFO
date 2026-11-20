@@ -107,13 +107,31 @@ function validate_registration(array $in, array $conf, array $types, array $scho
         }
     }
 
-    $d['address'] = preg_replace('/\s+/', ' ', $s('address'));
-    if ($d['address'] === '') {
-        $err['address'] = 'Complete address is required.';
-    } elseif (mb_strlen($d['address']) < 8) {
-        $err['address'] = 'Please enter your complete address (street / barangay, city / municipality, province).';
-    } elseif (mb_strlen($d['address']) > 255) {
-        $err['address'] = 'Address is too long (max 255 characters).';
+    // Address: Province / City / Barangay are picked from lists; only House No. & Street is typed.
+    $d['addr_province'] = $s('addr_province');
+    $d['addr_city']     = $s('addr_city');
+    $d['addr_barangay'] = $s('addr_barangay');
+    $d['addr_street']   = preg_replace('/\s+/', ' ', $s('addr_street'));
+    $provinces = address_provinces();
+    $cities    = address_cities($d['addr_province']);
+    if (!isset($provinces[$d['addr_province']])) {
+        $err['addr_province'] = 'Please select your province.';
+        $d['addr_province'] = $d['addr_city'] = $d['addr_barangay'] = '';
+    } elseif (!isset($cities[$d['addr_city']])) {
+        $err['addr_city'] = 'Please select your city / municipality.';
+        $d['addr_city'] = $d['addr_barangay'] = '';
+    } elseif (!in_array($d['addr_barangay'], $cities[$d['addr_city']], true)) {
+        $err['addr_barangay'] = 'Please select your barangay.';
+        $d['addr_barangay'] = '';
+    }
+    if ($d['addr_street'] === '') {
+        $err['addr_street'] = 'House No. & Street is required.';
+    } elseif (mb_strlen($d['addr_street']) > 150) {
+        $err['addr_street'] = 'House No. & Street is too long (max 150 characters).';
+    }
+    $d['address'] = '';
+    if (!isset($err['addr_province']) && !isset($err['addr_city']) && !isset($err['addr_barangay']) && !isset($err['addr_street'])) {
+        $d['address'] = $d['addr_street'] . ', Brgy. ' . $d['addr_barangay'] . ', ' . $d['addr_city'] . ', ' . $provinces[$d['addr_province']];
     }
 
     // ---- academic
@@ -349,7 +367,7 @@ public_header('Register · ' . $conf['title']);
         <div><dt>First Name</dt><dd><?= e($data['first_name']) ?></dd></div>
         <div><dt>Middle Name</dt><dd><?= $dash($data['middle_name']) ?></dd></div>
         <div><dt>Contact Number</dt><dd><?= e($data['contact_number']) ?></dd></div>
-        <div class="full"><dt>Complete Address</dt><dd><?= e($data['address']) ?></dd></div>
+        <div class="full"><dt>Address</dt><dd><?= e($data['address']) ?></dd></div>
       </dl>
     </div>
   </div>
@@ -446,10 +464,40 @@ public_header('Register · ' . $conf['title']);
             <div class="help">Mobile number, e.g. 09171234567</div>
             <?= $err('contact_number') ?>
           </div>
-          <div class="field full">
-            <label for="address">Complete Address<span class="req">*</span></label>
-            <textarea class="input<?= $inv('address') ?>" id="address" name="address" rows="2" maxlength="255" required autocomplete="street-address" placeholder="House No. / Street, Barangay, City / Municipality, Province"><?= $val('address') ?></textarea>
-            <?= $err('address') ?>
+          <div class="field full" id="address-fields" data-src="<?= e(url('assets/data/address/')) ?>"
+               data-city="<?= $val('addr_city') ?>" data-barangay="<?= $val('addr_barangay') ?>">
+            <span class="label">Address<span class="req">*</span></span>
+            <div class="form-grid">
+              <div class="field">
+                <label for="addr_province">Province</label>
+                <select class="input<?= $inv('addr_province') ?>" id="addr_province" name="addr_province" required>
+                  <option value="">— Select province —</option>
+                  <?php foreach (address_provinces() as $pk => $pn): ?>
+                    <option value="<?= e($pk) ?>" <?= ($data['addr_province'] ?? '') === $pk ? 'selected' : '' ?>><?= e($pn) ?></option>
+                  <?php endforeach; ?>
+                </select>
+                <?= $err('addr_province') ?>
+              </div>
+              <div class="field">
+                <label for="addr_city">City / Municipality</label>
+                <select class="input<?= $inv('addr_city') ?>" id="addr_city" name="addr_city" required disabled>
+                  <option value="">— Select province first —</option>
+                </select>
+                <?= $err('addr_city') ?>
+              </div>
+              <div class="field">
+                <label for="addr_barangay">Barangay</label>
+                <select class="input<?= $inv('addr_barangay') ?>" id="addr_barangay" name="addr_barangay" required disabled>
+                  <option value="">— Select city first —</option>
+                </select>
+                <?= $err('addr_barangay') ?>
+              </div>
+              <div class="field">
+                <label for="addr_street">House No. &amp; Street</label>
+                <input class="input<?= $inv('addr_street') ?>" id="addr_street" name="addr_street" value="<?= $val('addr_street') ?>" maxlength="150" required autocomplete="address-line1" placeholder="e.g. 123 Mabini St.">
+                <?= $err('addr_street') ?>
+              </div>
+            </div>
           </div>
         </div>
       </div>

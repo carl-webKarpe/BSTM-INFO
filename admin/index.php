@@ -19,7 +19,6 @@ if ($confId) {
 $sum    = stats_summary($where, $params);
 $course = chart_data(stats_by_course($where, $params, 10));
 $year   = chart_data(stats_by_year($where, $params));
-$school = chart_data(stats_by_school($where, $params, 8));
 $trend  = chart_data(stats_trend($where, $params, 30));
 $status = [['Pending', 'Confirmed', 'Cancelled'], [$sum['pending'], $sum['confirmed'], $sum['cancelled']]];
 
@@ -82,7 +81,7 @@ admin_header('Dashboard', 'dashboard');
   </div>
 </div>
 
-<div class="grid-3 mb-3">
+<div class="grid-2 mb-3">
   <div class="card">
     <div class="card-header"><h3>By Course / Program</h3></div>
     <div class="card-body"><div class="chart-box"><canvas id="ch-course"></canvas></div></div>
@@ -90,10 +89,6 @@ admin_header('Dashboard', 'dashboard');
   <div class="card">
     <div class="card-header"><h3>By Year Level</h3></div>
     <div class="card-body"><div class="chart-box"><canvas id="ch-year"></canvas></div></div>
-  </div>
-  <div class="card">
-    <div class="card-header"><h3>By School / Institution</h3></div>
-    <div class="card-body"><div class="chart-box"><canvas id="ch-school"></canvas></div></div>
   </div>
 </div>
 
@@ -140,6 +135,5 @@ admin_header('Dashboard', 'dashboard');
 $js = 'makeChart("ch-trend","line",' . json_encode($trend[0]) . ',' . json_encode($trend[1]) . ',{label:"Registrations"});'
     . 'makeChart("ch-status","doughnut",' . json_encode($status[0]) . ',' . json_encode($status[1]) . ',{colors:["#F59E0B","#16A34A","#DC2626"]});'
     . 'makeChart("ch-course","hbar",' . json_encode($course[0]) . ',' . json_encode($course[1]) . ');'
-    . 'makeChart("ch-year","bar",' . json_encode($year[0]) . ',' . json_encode($year[1]) . ',{colors:"#172554"});'
-    . 'makeChart("ch-school","doughnut",' . json_encode($school[0]) . ',' . json_encode($school[1]) . ');';
+    . 'makeChart("ch-year","bar",' . json_encode($year[0]) . ',' . json_encode($year[1]) . ',{colors:"#172554"});';
 admin_footer(['vendor/chart.umd.min.js', 'js/charts.js'], $js);

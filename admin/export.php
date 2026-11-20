@@ -24,28 +24,28 @@ if (ctype_digit(get('conference'))) {
 
 if ($type === 'attendance') {
     $title = 'Attendance Report';
-    $columns = ['Reference No.', 'ID Number', 'Full Name', 'Type', 'School / Institution', 'Course / Program', 'Year Level', 'Status', 'Attendance', 'Check-in Time'];
+    $columns = ['Reference No.', 'ID Number', 'Full Name', 'Type', 'Course / Program', 'Year Level', 'Status', 'Attendance', 'Check-in Time'];
     $data = array_map(fn($r) => [
-        $r['reference_no'], $r['id_number'] ?? '', full_name($r), $r['type_name'], school_label($r),
+        $r['reference_no'], $r['id_number'] ?? '', full_name($r), $r['type_name'],
         $r['course_code'] ?: ($r['course_other'] ?: ''), $r['year_level'] ?? '', ucfirst($r['status']),
         $r['checked_in_at'] ? 'Present' : 'Not yet checked in', $r['checked_in_at'] ? fmt_datetime($r['checked_in_at']) : '',
     ], $rows);
 } elseif ($forPdf) {
     $title = 'Participant Records';
-    $columns = ['Student ID', 'Full Name', 'Contact No.', 'School / Institution', 'Course', 'Year', 'Type', 'Conference', 'Registered', 'Status'];
+    $columns = ['Student ID', 'Full Name', 'Contact No.', 'Course', 'Year', 'Type', 'Conference', 'Registered', 'Status'];
     $data = array_map(fn($r) => [
-        $r['id_number'] ?? '', full_name($r), $r['contact_number'], school_label($r),
+        $r['id_number'] ?? '', full_name($r), $r['contact_number'],
         $r['course_code'] ?: ($r['course_other'] ?: ''), $r['year_level'] ?? '', $r['type_name'],
         $r['conference_title'], fmt_datetime($r['registered_at']), ucfirst($r['status']),
     ], $rows);
 } else {
     $title = 'Participant Records';
-    $columns = ['Reference No.', 'Student / Employee ID', 'Last Name', 'First Name', 'Middle Name', 'Contact Number', 'Complete Address',
-        'Participant Type', 'School / Institution', 'Course / Program', 'Year Level', 'Section', 'Conference', 'Attendance Category',
+    $columns = ['Reference No.', 'Student / Employee ID', 'Last Name', 'First Name', 'Middle Name', 'Contact Number', 'Address',
+        'Participant Type', 'Course / Program', 'Year Level', 'Section', 'Conference', 'Attendance Category',
         'Special Requirements', 'Status', 'Registration Date', 'Checked In At'];
     $data = array_map(fn($r) => [
         $r['reference_no'], $r['id_number'] ?? '', $r['last_name'], $r['first_name'], $r['middle_name'] ?? '', $r['contact_number'], $r['address'],
-        $r['type_name'], school_label($r), course_label($r) === '—' ? '' : course_label($r), $r['year_level'] ?? '', $r['section'] ?? '',
+        $r['type_name'], course_label($r) === '—' ? '' : course_label($r), $r['year_level'] ?? '', $r['section'] ?? '',
         $r['conference_title'], $r['attendance_category'] ?? '', $r['special_requirements'] ?? '', ucfirst($r['status']),
         date('Y-m-d H:i', strtotime($r['registered_at'])), $r['checked_in_at'] ? date('Y-m-d H:i', strtotime($r['checked_in_at'])) : '',
     ], $rows);

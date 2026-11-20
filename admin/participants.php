@@ -20,7 +20,6 @@ $rows = q_all(registration_select_sql() . ' WHERE 1=1' . $where . " ORDER BY $or
 
 $confs   = accessible_conferences();
 $courses = lookup_courses(false);
-$schools = lookup_schools(false);
 $archived = get('archived') === '1';
 $sort = get('sort', 'date');
 $dir  = strtolower(get('dir', $sort === 'date' ? 'desc' : 'asc'));
@@ -36,7 +35,7 @@ function sort_link(string $key, string $label, string $sort, string $dir): strin
 
 $exportQuery = http_build_query(array_diff_key($_GET, ['page' => 1, 'per_page' => 1]));
 $returnUrl = $_SERVER['REQUEST_URI'] ?? '';
-$activeFilters = count(array_filter(array_intersect_key($_GET, array_flip(['q', 'conference', 'course', 'school', 'year', 'type', 'status', 'from', 'to', 'attendance'])), fn($v) => $v !== ''));
+$activeFilters = count(array_filter(array_intersect_key($_GET, array_flip(['q', 'conference', 'course', 'year', 'type', 'status', 'from', 'to', 'attendance'])), fn($v) => $v !== ''));
 
 admin_header('Participant Records', 'participants');
 ?>
@@ -66,7 +65,6 @@ admin_header('Participant Records', 'participants');
       <div class="field"><label for="f-conf">Conference</label><select class="input input-sm" id="f-conf" name="conference"><option value="">All</option><?php foreach ($confs as $c): ?><option value="<?= (int) $c['id'] ?>" <?= get('conference') === (string) $c['id'] ? 'selected' : '' ?>><?= e($c['title']) ?></option><?php endforeach; ?></select></div>
       <div class="field"><label for="f-course">Course / Program</label><select class="input input-sm" id="f-course" name="course"><option value="">All</option><?php foreach ($courses as $c): ?><option value="<?= (int) $c['id'] ?>" <?= get('course') === (string) $c['id'] ? 'selected' : '' ?>><?= e($c['code']) ?></option><?php endforeach; ?><option value="other" <?= get('course') === 'other' ? 'selected' : '' ?>>Other</option></select></div>
       <div class="field"><label for="f-year">Year Level</label><select class="input input-sm" id="f-year" name="year"><option value="">All</option><?php foreach (year_levels() as $y): ?><option <?= get('year') === $y ? 'selected' : '' ?>><?= e($y) ?></option><?php endforeach; ?></select></div>
-      <div class="field"><label for="f-school">School</label><select class="input input-sm" id="f-school" name="school"><option value="">All</option><?php foreach ($schools as $s): ?><option value="<?= (int) $s['id'] ?>" <?= get('school') === (string) $s['id'] ? 'selected' : '' ?>><?= e($s['name']) ?></option><?php endforeach; ?><option value="other" <?= get('school') === 'other' ? 'selected' : '' ?>>Other</option></select></div>
       <div class="field"><label for="f-type">Participant Type</label><select class="input input-sm" id="f-type" name="type"><option value="">All</option><?php foreach (['student' => 'Student', 'faculty' => 'Faculty', 'guest' => 'Guest'] as $k => $v): ?><option value="<?= $k ?>" <?= get('type') === $k ? 'selected' : '' ?>><?= $v ?></option><?php endforeach; ?></select></div>
       <div class="field"><label for="f-status">Status</label><select class="input input-sm" id="f-status" name="status"><option value="">All</option><?php foreach (statuses() as $k => $v): ?><option value="<?= $k ?>" <?= get('status') === $k ? 'selected' : '' ?>><?= $v ?></option><?php endforeach; ?></select></div>
       <div class="field"><label for="f-att">Attendance</label><select class="input input-sm" id="f-att" name="attendance"><option value="">All</option><option value="in" <?= get('attendance') === 'in' ? 'selected' : '' ?>>Checked in</option><option value="out" <?= get('attendance') === 'out' ? 'selected' : '' ?>>Not yet checked in</option></select></div>
@@ -112,8 +110,7 @@ admin_header('Participant Records', 'participants');
           <th><?= sort_link('id_number', 'Student ID', $sort, $dir) ?></th>
           <th class="col-name"><?= sort_link('name', 'Full Name', $sort, $dir) ?></th>
           <th>Contact No.</th>
-          <th class="col-wide"><?= sort_link('school', 'School / Institution', $sort, $dir) ?></th>
-          <th><?= sort_link('course', 'Course / Program', $sort, $dir) ?></th>
+                    <th><?= sort_link('course', 'Course / Program', $sort, $dir) ?></th>
           <th><?= sort_link('year', 'Year', $sort, $dir) ?></th>
           <th><?= sort_link('type', 'Type', $sort, $dir) ?></th>
           <th class="col-wide"><?= sort_link('conference', 'Conference', $sort, $dir) ?></th>
@@ -123,14 +120,13 @@ admin_header('Participant Records', 'participants');
         </tr>
       </thead>
       <tbody>
-      <?php if (!$rows) echo empty_row(12, 'No participant records match your filters.', 'people'); ?>
+      <?php if (!$rows) echo empty_row(11, 'No participant records match your filters.', 'people'); ?>
       <?php foreach ($rows as $r): $id = (int) $r['id']; ?>
         <tr>
           <td><input type="checkbox" class="row-check" form="act-form" name="ids[]" value="<?= $id ?>" aria-label="Select"></td>
           <td class="nowrap"><?= e($r['id_number'] ?: '—') ?><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
           <td><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><?= e(full_name($r)) ?></a><?= $r['checked_in_at'] ? '<div class="cell-sub" style="color:var(--success)"><i class="bi bi-person-check-fill"></i> Present</div>' : '' ?></td>
           <td class="nowrap"><?= e($r['contact_number']) ?></td>
-          <td><?= e(school_label($r)) ?></td>
           <td><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
           <td class="nowrap"><?= e($r['year_level'] ?: '—') ?><?= $r['section'] ? '<div class="cell-sub">Sec. ' . e($r['section']) . '</div>' : '' ?></td>
           <td><?= type_badge($r['type_name']) ?></td>

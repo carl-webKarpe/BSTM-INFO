@@ -534,3 +534,34 @@ function render_pagination(array $p): string
         : '<span class="disabled"><i class="bi bi-chevron-right"></i></span>';
     return $html . '</nav>';
 }
+
+// =================================================================
+// Philippine address lists (assets/data/address, from PSGC data)
+// =================================================================
+/** @return array<string, string> province key => province name */
+function address_provinces(): array
+{
+    static $list = null;
+    if ($list === null) {
+        $list = [];
+        $raw = json_decode((string) @file_get_contents(APP_ROOT . '/assets/data/address/provinces.json'), true) ?: [];
+        foreach ($raw as $p) {
+            $list[$p['k']] = $p['n'];
+        }
+    }
+    return $list;
+}
+
+/** @return array<string, string[]> city name => barangay names */
+function address_cities(string $provinceKey): array
+{
+    if (!preg_match('/^[A-Z0-9]{2,4}$/', $provinceKey) || !isset(address_provinces()[$provinceKey])) {
+        return [];
+    }
+    $raw = json_decode((string) @file_get_contents(APP_ROOT . '/assets/data/address/' . $provinceKey . '.json'), true) ?: [];
+    $out = [];
+    foreach ($raw as $c) {
+        $out[$c['n']] = $c['b'];
+    }
+    return $out;
+}

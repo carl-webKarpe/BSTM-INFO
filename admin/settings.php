@@ -124,7 +124,7 @@ admin_header('System Settings', 'settings', 'Administration');
 ?>
 <div class="tabs">
   <a href="?tab=general" class="<?= $tab === 'general' ? 'active' : '' ?>"><i class="bi bi-sliders"></i> General</a>
-  <a href="?tab=lists" class="<?= $tab === 'lists' ? 'active' : '' ?>"><i class="bi bi-list-ul"></i> Schools, Courses &amp; Lists</a>
+  <a href="?tab=lists" class="<?= $tab === 'lists' ? 'active' : '' ?>"><i class="bi bi-list-ul"></i> Courses &amp; Lists</a>
   <a href="?tab=backup" class="<?= $tab === 'backup' ? 'active' : '' ?>"><i class="bi bi-database"></i> Backup</a>
 </div>
 
@@ -151,20 +151,6 @@ admin_header('System Settings', 'settings', 'Administration');
 
 <?php elseif ($tab === 'lists'): ?>
 <div class="grid-2">
-  <div class="card">
-    <div class="card-header"><h3><i class="bi bi-building"></i> Schools / Institutions</h3></div>
-    <div class="card-body">
-      <form method="post" class="copy-row"><?= csrf_field() ?><input type="hidden" name="action" value="add_school"><input class="input input-sm" name="name" placeholder="New school name" required maxlength="190"><button class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Add</button></form>
-    </div>
-    <div class="table-wrap" style="max-height:420px"><table class="table"><tbody>
-      <?php if (!$schools) echo empty_row(3, 'No schools yet.'); ?>
-      <?php foreach ($schools as $s): ?><tr><td><?= e($s['name']) ?></td><td><?= $s['is_active'] ? '<span class="badge badge-success">Active</span>' : '<span class="badge badge-muted">Hidden</span>' ?></td>
-        <td class="text-right nowrap"><form method="post" class="flex" style="justify-content:flex-end;gap:.3rem"><?= csrf_field() ?><input type="hidden" name="kind" value="school"><input type="hidden" name="id" value="<?= (int) $s['id'] ?>">
-          <button class="btn btn-ghost btn-sm" name="action" value="toggle" title="<?= $s['is_active'] ? 'Hide from form' : 'Show on form' ?>"><i class="bi bi-eye<?= $s['is_active'] ? '-slash' : '' ?>"></i></button>
-          <button class="btn btn-ghost btn-sm" name="action" value="delete" data-confirm="Delete this school?" title="Delete"><i class="bi bi-trash"></i></button></form></td></tr><?php endforeach; ?>
-    </tbody></table></div>
-  </div>
-
   <div class="card">
     <div class="card-header"><h3><i class="bi bi-journal-bookmark"></i> Courses / Programs</h3></div>
     <div class="card-body">
