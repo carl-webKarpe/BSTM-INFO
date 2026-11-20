@@ -140,7 +140,7 @@ function validate_registration(array $in, array $conf, array $types, array $scho
     $d['course_id']    = $s('course_id');
     $d['course_other'] = $s('course_other');
     $d['year_level']   = $s('year_level');
-    $d['section']      = $s('section');
+    $d['section']      = ''; // Section is no longer asked
 
     // School / Institution is no longer asked on the form.
     $d['school_id'] = $d['school_other'] = '';
@@ -158,9 +158,6 @@ function validate_registration(array $in, array $conf, array $types, array $scho
         if (!in_array($d['year_level'], year_levels(), true)) {
             $err['year_level'] = 'Please select your year level.';
             $d['year_level'] = '';
-        }
-        if (mb_strlen($d['section']) > 50) {
-            $err['section'] = 'Section is too long.';
         }
     } else {
         $d['year_level'] = $d['section'] = '';
@@ -380,7 +377,6 @@ public_header('Register · ' . $conf['title']);
         <div><dt><?= $t === 'faculty' ? 'Department / Program' : 'Course / Program' ?></dt><dd><?= $dash($courseTxt) ?></dd></div>
         <?php if ($t === 'student'): ?>
           <div><dt>Year Level</dt><dd><?= e($data['year_level']) ?></dd></div>
-          <div><dt>Section</dt><dd><?= $dash($data['section']) ?></dd></div>
         <?php endif; ?>
       </dl>
     </div>
@@ -518,7 +514,7 @@ public_header('Register · ' . $conf['title']);
             </select>
             <?= $err('course_id') ?>
           </div>
-          <div class="field" data-show="student">
+          <div class="field full" data-show="student">
             <label for="year_level">Year Level<span class="req">*</span></label>
             <select class="input<?= $inv('year_level') ?>" id="year_level" name="year_level" data-required-for="student">
               <option value="">— Select —</option>
@@ -527,11 +523,6 @@ public_header('Register · ' . $conf['title']);
               <?php endforeach; ?>
             </select>
             <?= $err('year_level') ?>
-          </div>
-          <div class="field" data-show="student">
-            <label for="section">Section<span class="opt">(optional)</span></label>
-            <input class="input<?= $inv('section') ?>" id="section" name="section" value="<?= $val('section') ?>" maxlength="50" placeholder="e.g. A">
-            <?= $err('section') ?>
           </div>
         </div>
       </div>

@@ -131,7 +131,7 @@ admin_header('Participant Records', 'participants');
           <td><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><?= e(full_name($r)) ?></a><?= $r['checked_in_at'] ? '<div class="cell-sub" style="color:var(--success)"><i class="bi bi-person-check-fill"></i> Present</div>' : '' ?></td>
           <td class="nowrap"><?= e($r['contact_number']) ?></td>
           <td><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
-          <td class="nowrap"><?= e($r['year_level'] ?: '—') ?><?= $r['section'] ? '<div class="cell-sub">Sec. ' . e($r['section']) . '</div>' : '' ?></td>
+          <td class="nowrap"><?= e($r['year_level'] ?: '—') ?></td>
           <td><?= type_badge($r['type_name']) ?></td>
           <td><?= e($r['conference_title']) ?></td>
           <td class="nowrap small"><?= e(fmt_datetime($r['registered_at'])) ?></td>

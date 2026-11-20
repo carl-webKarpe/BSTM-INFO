@@ -23,7 +23,7 @@ $errors = [];
 if (is_post()) {
     verify_csrf();
     foreach (['id_number', 'last_name', 'first_name', 'middle_name', 'contact_number', 'address', 'school_id', 'school_other',
-              'course_id', 'course_other', 'year_level', 'section', 'attendance_category', 'special_requirements', 'status', 'participant_type_id'] as $k) {
+              'course_id', 'course_other', 'year_level', 'attendance_category', 'special_requirements', 'status', 'participant_type_id'] as $k) {
         $d[$k] = post($k);
     }
     $d['id_number'] = strtoupper($d['id_number']);
@@ -63,7 +63,7 @@ if (is_post()) {
             (int) $d['participant_type_id'],
             $d['school_id'] !== '' ? (int) $d['school_id'] : null, $d['school_id'] === '' && $d['school_other'] !== '' ? $d['school_other'] : null,
             $d['course_id'] !== '' ? (int) $d['course_id'] : null, $d['course_id'] === '' && $d['course_other'] !== '' ? $d['course_other'] : null,
-            $typeCode === 'student' ? ($d['year_level'] ?: null) : null, $typeCode === 'student' ? ($d['section'] ?: null) : null,
+            $typeCode === 'student' ? ($d['year_level'] ?: null) : null, $r['section'] ?: null,
             $d['attendance_category'] ?: null, $d['special_requirements'] ?: null, $d['status'], $id,
         ]);
         $pdo->commit();
@@ -105,7 +105,6 @@ admin_header('Edit Participant', 'participants', 'Participant Records');
         <div class="field"><label>Course / Program</label><select class="input" name="course_id"><option value="">— Other / none —</option><?php foreach ($courses as $c): ?><option value="<?= (int) $c['id'] ?>" <?= $sel($c['id'], $d['course_id']) ?>><?= e($c['code'] . ' – ' . $c['name']) ?></option><?php endforeach; ?></select></div>
         <div class="field"><label>Other Course (if not in list)</label><input class="input" name="course_other" value="<?= e($d['course_other']) ?>" maxlength="190"></div>
         <div class="field"><label>Year Level <span class="opt">(students)</span></label><select class="input" name="year_level"><option value="">—</option><?php foreach (year_levels() as $y): ?><option <?= $sel($y, $d['year_level']) ?>><?= e($y) ?></option><?php endforeach; ?></select></div>
-        <div class="field"><label>Section</label><input class="input" name="section" value="<?= e($d['section']) ?>" maxlength="50"></div>
       </div>
     </div>
     <div class="card">

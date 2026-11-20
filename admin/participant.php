@@ -32,7 +32,6 @@ $sections = [
     'Academic Information' => array_filter([
         ($r['type_code'] === 'faculty' ? 'Department / Program' : 'Course / Program') => $isGuest ? null : course_label($r),
         'Year Level' => $r['type_code'] === 'student' ? ($r['year_level'] ?: '—') : null,
-        'Section' => $r['type_code'] === 'student' ? ($r['section'] ?: '—') : null,
     ], fn($v) => $v !== null),
     'Conference Information' => [
         'Conference' => $r['conference_title'],

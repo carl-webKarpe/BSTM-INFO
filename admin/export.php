@@ -41,11 +41,11 @@ if ($type === 'attendance') {
 } else {
     $title = 'Participant Records';
     $columns = ['Reference No.', 'Student / Employee ID', 'Last Name', 'First Name', 'Middle Name', 'Contact Number', 'Address',
-        'Participant Type', 'Course / Program', 'Year Level', 'Section', 'Conference', 'Attendance Category',
+        'Participant Type', 'Course / Program', 'Year Level', 'Conference', 'Attendance Category',
         'Special Requirements', 'Status', 'Registration Date', 'Checked In At'];
     $data = array_map(fn($r) => [
         $r['reference_no'], $r['id_number'] ?? '', $r['last_name'], $r['first_name'], $r['middle_name'] ?? '', $r['contact_number'], $r['address'],
-        $r['type_name'], course_label($r) === '—' ? '' : course_label($r), $r['year_level'] ?? '', $r['section'] ?? '',
+        $r['type_name'], course_label($r) === '—' ? '' : course_label($r), $r['year_level'] ?? '',
         $r['conference_title'], $r['attendance_category'] ?? '', $r['special_requirements'] ?? '', ucfirst($r['status']),
         date('Y-m-d H:i', strtotime($r['registered_at'])), $r['checked_in_at'] ? date('Y-m-d H:i', strtotime($r['checked_in_at'])) : '',
     ], $rows);

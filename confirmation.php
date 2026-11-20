@@ -82,7 +82,7 @@ public_header('Registration ' . $reg['reference_no']);
       <div><dt>Contact Number</dt><dd><?= e($reg['contact_number']) ?></dd></div>
       <?php if (school_label($reg) !== '—'): ?><div><dt>School / Institution</dt><dd><?= e(school_label($reg)) ?></dd></div><?php endif; ?>
       <?php if ($reg['type_code'] !== 'guest'): ?><div><dt><?= $reg['type_code'] === 'faculty' ? 'Department' : 'Course / Program' ?></dt><dd><?= e(course_label($reg)) ?></dd></div><?php endif; ?>
-      <?php if ($reg['year_level']): ?><div><dt>Year Level &amp; Section</dt><dd><?= e($reg['year_level'] . ($reg['section'] ? ' – ' . $reg['section'] : '')) ?></dd></div><?php endif; ?>
+      <?php if ($reg['year_level']): ?><div><dt>Year Level</dt><dd><?= e($reg['year_level']) ?></dd></div><?php endif; ?>
     </dl>
   </div>
 </div>
