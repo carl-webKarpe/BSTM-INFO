@@ -37,16 +37,18 @@ if (is_post()) {
 
 public_header('Find my registration');
 ?>
-<section class="hero">
+<section class="hero has-mascot">
   <div class="eyebrow"><i class="bi bi-search"></i> Registration Lookup</div>
   <h1>Find my registration</h1>
   <p>Enter the reference number you received after registering to view or print your confirmation.</p>
+  <div class="hero-mascot" data-bubble="left" data-mascot="<?= $error ? 'confused' : 'think' ?>" data-size="96"
+       data-say="<?= $error ? 'Hmm, not found…' : 'Let’s find it! 🔍' ?>"></div>
 </section>
 
 <div class="card" style="max-width:520px;margin:0 auto">
   <div class="card-body">
     <?php if ($error): ?><div class="alert alert-error"><i class="bi bi-exclamation-octagon-fill"></i><div><?= e($error) ?></div></div><?php endif; ?>
-    <form method="post" class="form-grid" style="grid-template-columns:1fr">
+    <form method="post" class="form-grid" style="grid-template-columns:1fr" data-loader="Looking for your registration…">
       <?= csrf_field() ?>
       <div class="field">
         <label for="ref">Reference Number<span class="req">*</span></label>

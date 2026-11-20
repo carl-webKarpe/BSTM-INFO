@@ -6,7 +6,7 @@
 require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/public_layout.php';
 
-public_header('Welcome', ['wide' => true]);
+public_header('Welcome', ['wide' => true, 'loader' => true]);
 ?>
 <section class="l-hero">
   <!-- animated background (decorative only) -->
@@ -21,8 +21,8 @@ public_header('Welcome', ['wide' => true]);
       <i class="bi bi-ticket-perforated fl i6"></i>
     </div>
   </div>
-  <!-- pixel mascot: sits on the books, runs, waves, does something funny, then sits again -->
-  <div class="mascot-stage" aria-hidden="true"><canvas id="mascot"></canvas></div>
+  <!-- mascot: sits on the books, studies, runs, waves, does something funny, then sits again (assets/js/mascot.js) -->
+  <div class="mascot-stage" data-mascot="hero"></div>
   <div class="l-wrap">
     <h1>Student Registration</h1>
     <p>Register for school events in under 2 minutes, right from your phone.</p>
@@ -51,7 +51,7 @@ public_header('Welcome', ['wide' => true]);
       <a class="btn btn-primary btn-lg" href="<?= e(url('lookup.php')) ?>"><i class="bi bi-search"></i> Find my registration</a>
     </div>
 
-    <div class="l-organizer"><a href="<?= e(url('admin/login.php')) ?>"><i class="bi bi-shield-lock"></i> Organizer login</a></div>
+    <div class="l-organizer"><a href="<?= e(url('mascot.php')) ?>"><i class="bi bi-emoji-smile"></i> Meet our mascot</a> · <a href="<?= e(url('admin/login.php')) ?>"><i class="bi bi-shield-lock"></i> Organizer login</a></div>
   </div>
 </section>
-<?php public_footer(['js/mascot.js']); ?>
+<?php public_footer(); ?>

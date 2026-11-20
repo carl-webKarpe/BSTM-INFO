@@ -20,6 +20,12 @@ function public_header(string $title, array $opts = []): void
 <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 </head>
 <body class="public-body<?= !empty($opts['wide']) ? ' is-landing' : '' ?>" data-org="<?= e($system) ?>">
+<?php if (!empty($opts['loader'])): ?>
+<script>try { if (sessionStorage.getItem('msc_seen')) document.documentElement.className += ' m-seen'; } catch (e) {}</script>
+<div id="m-loader" class="m-loader" role="status" aria-label="Loading">
+  <div class="m-loader-in"><div data-mascot="loader"></div><p>Getting things ready…</p><div class="m-dots"><i></i><i></i><i></i></div></div>
+</div>
+<?php endif; ?>
 <header class="public-top">
   <div class="inner">
     <a class="brand" href="<?= e(url('index.php')) ?>">
@@ -45,6 +51,8 @@ function public_footer(array $scripts = []): void
 <script src="<?= asset($s) ?>"></script>
 <?php endforeach; ?>
 <script src="<?= asset('js/app.js') ?>"></script>
+<script src="<?= asset('vendor/gsap.min.js') ?>"></script>
+<script src="<?= asset('js/mascot.js') ?>"></script>
 </body>
 </html>
 <?php
@@ -56,7 +64,9 @@ function public_message(string $title, string $message, string $tone = 'info', s
     public_header($title);
     ?>
   <div class="card status-screen">
-    <div class="big-icon <?= e($tone) ?>"><i class="bi bi-<?= e($icon) ?>"></i></div>
+    <div class="status-mascot" data-mascot="<?= $icon === 'qr-code' ? 'confused' : ($tone === 'warning' ? 'think' : 'sad') ?>" data-size="120">
+      <div class="big-icon <?= e($tone) ?>"><i class="bi bi-<?= e($icon) ?>"></i></div>
+    </div>
     <h1><?= e($title) ?></h1>
     <p class="muted" style="max-width:480px;margin:0 auto 1rem"><?= e($message) ?></p>
     <?php if ($conference): ?>

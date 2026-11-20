@@ -68,16 +68,18 @@ $system = APP_NAME;
         <div class="feature"><i class="bi bi-person-check"></i> Fast attendance check-in</div>
         <div class="feature"><i class="bi bi-bar-chart-line"></i> Reports exportable to PDF &amp; Excel</div>
       </div>
+      <div class="login-art-mascot" data-mascot="wave" data-size="150" data-say="Hello, organizer! 👋"></div>
     </div>
     <small style="color:#93A3D9">&copy; <?= date('Y') ?> <?= e($system) ?></small>
   </div>
   <div class="login-form">
     <div class="box">
+      <div class="login-mascot"><div data-mascot="login" data-size="96"<?= $error ? ' data-error="1"' : '' ?>></div></div>
       <h2 style="font-size:1.5rem">Admin Login</h2>
       <p class="muted">Sign in to the organizer dashboard.</p>
       <?= render_flashes() ?>
       <?php if ($error): ?><div class="alert alert-error"><i class="bi bi-exclamation-octagon-fill"></i><div><?= e($error) ?></div></div><?php endif; ?>
-      <form method="post" class="form-grid" style="grid-template-columns:1fr" autocomplete="on">
+      <form method="post" class="form-grid" style="grid-template-columns:1fr" autocomplete="on" data-loader="Signing you in…">
         <?= csrf_field() ?>
         <div class="field">
           <label for="username">Username</label>
@@ -93,5 +95,7 @@ $system = APP_NAME;
     </div>
   </div>
 </div>
+<script src="<?= asset('vendor/gsap.min.js') ?>"></script>
+<script src="<?= asset('js/mascot.js') ?>"></script>
 </body>
 </html>

@@ -49,7 +49,11 @@ public_header('Registration ' . $reg['reference_no']);
 </div>
 
 <div class="card status-screen" style="padding-bottom:1.5rem">
-  <div class="big-icon <?= $statusInfo[0] ?>"><i class="bi bi-<?= $statusInfo[1] ?>"></i></div>
+  <?php $mtype = $reg['status'] === 'cancelled' ? 'sad' : ($isNew ? 'celebrate' : 'wave'); ?>
+  <div class="status-mascot" data-mascot="<?= $mtype ?>" data-size="120"
+       <?= $isNew && $reg['status'] !== 'cancelled' ? 'data-say="You\'re in! 🎉"' : '' ?>>
+    <div class="big-icon <?= $statusInfo[0] ?>"><i class="bi bi-<?= $statusInfo[1] ?>"></i></div>
+  </div>
   <h1><?= e($statusInfo[2]) ?></h1>
   <p class="muted" style="max-width:460px;margin:0 auto"><?= e($statusInfo[3]) ?></p>
   <div class="ref-box">

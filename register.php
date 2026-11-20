@@ -301,10 +301,12 @@ $typeIcons = ['student' => 'mortarboard', 'faculty' => 'person-workspace', 'gues
 
 public_header('Register · ' . $conf['title']);
 ?>
-<section class="hero">
+<section class="hero has-mascot">
   <div class="eyebrow"><i class="bi bi-qr-code-scan"></i> Student Registration</div>
   <h1><?= e($conf['title']) ?></h1>
   <p><?= e(setting('welcome_message', 'Please complete the form below to register.')) ?></p>
+  <div class="hero-mascot" data-bubble="left" data-mascot="<?= $view === 'review' ? 'think' : 'wave' ?>" data-size="96"
+       data-say="<?= $view === 'review' ? 'Double-check! 🔍' : ($errors ? 'Almost there!' : 'Let’s register! 👋') ?>"></div>
 </section>
 
 <div class="steps" aria-label="Registration progress">
@@ -394,7 +396,7 @@ public_header('Register · ' . $conf['title']);
     </div>
   </div>
 
-  <form method="post" class="sticky-actions" data-once>
+  <form method="post" class="sticky-actions" data-once data-loader="Submitting your registration…">
     <?= csrf_field() ?>
     <input type="hidden" name="t" value="<?= e($token) ?>">
     <button class="btn btn-outline btn-lg" name="action" value="edit" formnovalidate><i class="bi bi-pencil"></i> Edit Information</button>
@@ -404,7 +406,7 @@ public_header('Register · ' . $conf['title']);
 <?php else: ?>
   <p class="legend-req">Fields marked with <span class="req">*</span> are required. Fields marked <span class="opt">(optional)</span> may be left blank.</p>
 
-  <form method="post" id="reg-form" novalidate data-types="<?= e(implode(',', array_keys($types))) ?>">
+  <form method="post" id="reg-form" novalidate data-loader="Checking your details…" data-types="<?= e(implode(',', array_keys($types))) ?>">
     <?= csrf_field() ?>
     <input type="hidden" name="t" value="<?= e($token) ?>">
     <input type="hidden" name="action" value="review">

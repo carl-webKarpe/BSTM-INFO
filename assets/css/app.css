@@ -604,25 +604,82 @@ textarea.input { min-height: 90px; resize: vertical; }
   .hero-bg::before, .orb, .fl { animation: none; }
 }
 
-/* ---------- home banner: pixel mascot ---------- */
-.l-hero { padding-bottom: 150px; }
+/* ==================================================================
+   STUDENT MASCOT (SVG + GSAP) – see assets/js/mascot.js
+   ================================================================== */
+.msc { --msc-w: 120px; position: relative; display: inline-block; width: var(--msc-w); line-height: 0; vertical-align: bottom;
+  user-select: none; -webkit-user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.msc-svg { display: block; width: 100%; height: auto; overflow: visible; }
+.msc-bounce { position: relative; }
+.msc.is-interactive { cursor: pointer; }
+.msc.is-interactive:focus-visible { outline: 3px solid #93c5fd; outline-offset: 4px; border-radius: 12px; }
+.msc-bubble {
+  position: absolute; left: 50%; bottom: calc(100% - 2px); z-index: 3; opacity: 0; pointer-events: none;
+  background: #fff; color: #172554; font: 700 13px/1.25 Inter, system-ui, sans-serif; white-space: nowrap;
+  padding: .38rem .7rem; border-radius: 12px; box-shadow: 0 6px 18px rgba(15, 23, 42, .18);
+}
+.msc-bubble::after { content: ""; position: absolute; left: 50%; top: 100%; margin-left: -6px; border: 6px solid transparent; border-top-color: #fff; }
+.msc-bubble--left::after { left: 86%; }
+.msc-p { position: absolute; left: 50%; top: 30%; z-index: 3; font-size: 16px; line-height: 1; pointer-events: none; }
+
+/* ---------- home banner: mascot stage ---------- */
+.l-hero { padding-bottom: 180px; }
 .mascot-stage {
   position: absolute; z-index: 1; bottom: 0; left: 50%; transform: translateX(-50%);
-  width: min(960px, 100%); height: 140px; pointer-events: none;
+  width: min(960px, 100%); height: 170px; pointer-events: none;
 }
-.mascot-stage canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+.mascot-stage .m-books { position: absolute; left: 0; bottom: 0; width: 116px; line-height: 0; }
+.mascot-stage .m-books svg { display: block; width: 100%; height: auto; }
+.mascot-stage .m-actor { position: absolute; left: 0; bottom: 0; --msc-w: 92px; pointer-events: auto; }
 /* soft "floor" line the mascot runs on */
 .mascot-stage::after {
   content: ""; position: absolute; left: 6%; right: 6%; bottom: 3px; height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .25), transparent);
 }
-/* the floating icons stay in the text area (same layout as before the mascot);
-   the mascot runs in the strip below */
-.hero-icons { position: absolute; left: 0; right: 0; top: 0; bottom: 150px; }
-.hero-icons .i6 { bottom: -34px; }       /* ticket sits just below the buttons, as before */
+/* the floating icons stay in the text area; the mascot runs in the strip below */
+.hero-icons { position: absolute; left: 0; right: 0; top: 0; bottom: 180px; }
+.hero-icons .i6 { bottom: -34px; }
 @media (max-width: 640px) {
-  .l-hero { padding-bottom: 122px; }
-  .mascot-stage { height: 112px; }
-  .hero-icons { bottom: 122px; }
+  .l-hero { padding-bottom: 150px; }
+  .mascot-stage { height: 140px; }
+  .mascot-stage .m-books { width: 92px; }
+  .mascot-stage .m-actor { --msc-w: 74px; }
+  .hero-icons { bottom: 150px; }
   .i2, .i4 { display: none; }
 }
+
+/* ---------- mascot on other pages ---------- */
+.hero.has-mascot { padding-right: 130px; min-height: 170px; }
+.hero-mascot { position: absolute; right: 18px; bottom: 0; z-index: 2; }
+.status-mascot { display: flex; justify-content: center; margin: .25rem auto .5rem; min-height: 120px; align-items: flex-end; }
+.login-form .login-mascot { display: flex; justify-content: flex-start; margin-bottom: .5rem; min-height: 96px; }
+.login-art-mascot { margin: 1.5rem 0 0; }
+@media (max-width: 560px) {
+  .hero.has-mascot { padding-right: 96px; }
+  .hero-mascot { right: 8px; --msc-w: 68px !important; }
+}
+
+/* ---------- loading screens ---------- */
+.m-loader {
+  position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; text-align: center; color: #fff;
+  background: radial-gradient(600px 400px at 30% 20%, rgba(56, 189, 248, .35), transparent 60%), linear-gradient(135deg, #172554, #2563eb);
+}
+.m-loader p { margin: .8rem 0 .4rem; font-weight: 600; font-size: 1.05rem; color: #e0e7ff; }
+.m-loader .msc { --msc-w: 120px; }
+.m-dots i { display: inline-block; width: 7px; height: 7px; margin: 0 3px; border-radius: 50%; background: #fff; opacity: .35; animation: mdot 1s infinite; }
+.m-dots i:nth-child(2) { animation-delay: .15s; } .m-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes mdot { 40% { opacity: 1; transform: translateY(-4px); } }
+#m-loader { animation: mloaderOut .35s 5s forwards; }        /* safety net if scripts fail */
+.m-seen #m-loader { display: none; }
+@keyframes mloaderOut { to { opacity: 0; visibility: hidden; } }
+
+/* ---------- character sheet page ---------- */
+.sheet-grid { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+.sheet-card { background: #fff; border: 1px solid var(--gray-200); border-radius: 14px; padding: 1.4rem .6rem .8rem; text-align: center; overflow: hidden; }
+.sheet-card .msc { --msc-w: 96px; }
+.sheet-card span { display: inline-block; margin-top: .6rem; font-size: .78rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--primary-600); background: var(--primary-50); padding: .25rem .65rem; border-radius: 999px; }
+.sheet-stage { min-height: 150px; display: flex; align-items: flex-end; justify-content: center; }
+.sheet-hero { display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; }
+@media (max-width: 560px) { .sheet-hero { grid-template-columns: 1fr; text-align: center; } }
+
+@media (prefers-reduced-motion: reduce) { .m-dots i { animation: none; } }
