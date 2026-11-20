@@ -750,3 +750,24 @@ textarea.input { min-height: 90px; resize: vertical; }
 .conf-del { margin: 0 0 0 auto; }
 .btn-del { color: var(--danger); border-color: #fecaca; }
 .btn-del:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+/* participant list on phones: compact summary card + View button */
+.table-cards .c-view { display: none; }
+@media (max-width: 640px) {
+  .table-cards tr { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: .35rem .7rem; padding: .75rem .8rem .75rem 2.5rem; }
+  .table-cards td { padding: 0 !important; font-size: .82rem; }
+  .table-cards td[data-label]::before { display: none !important; }
+  .table-cards .c-check { position: absolute !important; left: .85rem; top: 1.05rem; }
+  .table-cards .c-name { order: -2; flex: 1 1 calc(100% - 110px); min-width: 0; grid-column: auto; padding: 0 !important; margin: 0; border: 0 !important; font-size: .98rem; }
+  .table-cards .c-view { display: block; order: -1; }
+  .table-cards .c-view .btn { padding: .4rem .75rem; }
+  .table-cards .c-actions, .table-cards .c-hide-sm { display: none !important; }
+  .table-cards .c-id { color: var(--gray-700); font-weight: 600; }
+  .table-cards .c-id .cell-sub { display: none; }
+  .table-cards .c-detail { color: var(--gray-500); }
+  .table-cards .c-status { order: 0; }
+  .table-cards .c-detail, .table-cards .c-id { order: 1; }
+  .table-cards .c-status .badge { font-size: .68rem; padding: .12rem .5rem; }
+}
+/* profile page: the actions menu opens toward the right */
+.dropdown-left .dropdown-menu { left: 0; right: auto; }

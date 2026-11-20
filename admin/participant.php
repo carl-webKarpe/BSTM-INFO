@@ -80,18 +80,28 @@ admin_header('Participant Profile', 'participants', 'Participant Records');
       </div>
     </div>
     <div class="toolbar no-print">
-      <a class="btn btn-outline btn-sm" href="<?= e(url('admin/participant_edit.php?id=' . $id)) ?>"><i class="bi bi-pencil"></i> Edit</a>
-      <form id="act-form" method="post" action="<?= e(url('admin/participant_action.php')) ?>" class="flex" style="gap:.5rem">
+      <?php $back = (string) ($_SERVER['HTTP_REFERER'] ?? ''); $back = strpos($back, '/admin/participants.php') !== false ? $back : url('admin/participants.php'); ?>
+      <a class="btn btn-outline btn-sm" href="<?= e($back) ?>"><i class="bi bi-arrow-left"></i> Back</a>
+      <form id="act-form" method="post" action="<?= e(url('admin/participant_action.php')) ?>">
         <?= csrf_field() ?><input type="hidden" name="return" value="<?= e($_SERVER['REQUEST_URI'] ?? '') ?>">
-        <?php if ($r['status'] !== 'confirmed'): ?><button class="btn btn-success btn-sm" name="single" value="confirm:<?= $id ?>"><i class="bi bi-check-circle"></i> Confirm</button><?php endif; ?>
-        <?php if ($r['status'] !== 'pending'): ?><button class="btn btn-outline btn-sm" name="single" value="pending:<?= $id ?>"><i class="bi bi-hourglass-split"></i> Mark Pending</button><?php endif; ?>
-        <?php if ($r['status'] !== 'cancelled'): ?><button class="btn btn-outline btn-sm" name="single" value="cancel:<?= $id ?>" data-confirm="Cancel this registration?" style="color:var(--danger)"><i class="bi bi-x-circle"></i> Cancel</button><?php endif; ?>
-        <button class="btn btn-outline btn-sm" name="single" value="<?= $r['is_archived'] ? 'restore' : 'archive' ?>:<?= $id ?>" <?= $r['is_archived'] ? '' : 'data-confirm="Archive this participant record?"' ?>><i class="bi bi-archive"></i> <?= $r['is_archived'] ? 'Restore' : 'Archive' ?></button>
-        <?php if (is_super()): ?><button class="btn btn-danger btn-sm" name="single" value="delete:<?= $id ?>" data-confirm="Permanently DELETE this participant record? This cannot be undone."><i class="bi bi-trash"></i> Delete</button><?php endif; ?>
       </form>
-      <div class="dropdown">
-        <button class="btn btn-primary btn-sm" data-dropdown><i class="bi bi-download"></i> Print / Export</button>
+      <div class="dropdown dropdown-left">
+        <button class="btn btn-outline btn-sm btn-icon" data-dropdown aria-label="More actions" title="More actions"><i class="bi bi-three-dots-vertical"></i></button>
         <div class="dropdown-menu">
+          <a href="<?= e(url('admin/participant_edit.php?id=' . $id)) ?>"><i class="bi bi-pencil"></i> Edit information</a>
+          <?php if ($r['is_archived']): ?>
+            <button form="act-form" name="single" value="restore:<?= $id ?>"><i class="bi bi-box-arrow-up"></i> Restore record</button>
+          <?php else: ?>
+            <button form="act-form" name="single" value="archive:<?= $id ?>" data-confirm="Archive this participant record?"><i class="bi bi-archive"></i> Archive record</button>
+          <?php endif; ?>
+          <?php if (is_super()): ?>
+            <button form="act-form" name="single" value="delete:<?= $id ?>" class="danger" data-confirm="Permanently DELETE this participant record? This cannot be undone."><i class="bi bi-trash"></i> Delete record</button>
+          <?php endif; ?>
+          <hr>
+          <?php if ($r['status'] !== 'confirmed'): ?><button form="act-form" name="single" value="confirm:<?= $id ?>"><i class="bi bi-check-circle"></i> Confirm registration</button><?php endif; ?>
+          <?php if ($r['status'] !== 'pending'): ?><button form="act-form" name="single" value="pending:<?= $id ?>"><i class="bi bi-hourglass-split"></i> Mark as pending</button><?php endif; ?>
+          <?php if ($r['status'] !== 'cancelled'): ?><button form="act-form" name="single" value="cancel:<?= $id ?>" data-confirm="Cancel this registration?"><i class="bi bi-x-circle"></i> Cancel registration</button><?php endif; ?>
+          <hr>
           <button type="button" data-print><i class="bi bi-printer"></i> Print</button>
           <button type="button" id="exp-pdf"><i class="bi bi-file-earmark-pdf"></i> Export PDF</button>
           <button type="button" id="exp-xlsx"><i class="bi bi-file-earmark-excel"></i> Export Excel</button>

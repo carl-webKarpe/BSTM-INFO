@@ -147,15 +147,16 @@ admin_header('Participant Records', 'participants');
       <?php foreach ($rows as $r): $id = (int) $r['id']; ?>
         <tr>
           <td class="c-check"><input type="checkbox" class="row-check" form="act-form" name="ids[]" value="<?= $id ?>" aria-label="Select"></td>
-          <td class="nowrap c-id" data-label="Student ID"><?= e($r['id_number'] ?: '—') ?><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
+          <td class="nowrap c-id c-detail" data-label="Student ID"><?= e($r['id_number'] ?: '—') ?><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
           <td class="c-name"><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><?= e(full_name($r)) ?></a><?= $r['checked_in_at'] ? '<div class="cell-sub" style="color:var(--success)"><i class="bi bi-person-check-fill"></i> Present</div>' : '' ?></td>
-          <td class="nowrap" data-label="Contact"><?= e($r['contact_number']) ?></td>
-          <td data-label="Course"><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
-          <td class="nowrap" data-label="Year"><?= e($r['year_level'] ?: '—') ?></td>
-          <td data-label="Type"><?= type_badge($r['type_name']) ?></td>
-          <td class="c-conf" data-label="Conference"><?= e($r['conference_title']) ?></td>
-          <td class="nowrap small" data-label="Registered"><?= e(fmt_datetime($r['registered_at'])) ?></td>
-          <td data-label="Status"><?= status_badge($r['status']) ?></td>
+          <td class="nowrap c-hide-sm" data-label="Contact"><?= e($r['contact_number']) ?></td>
+          <td class="c-detail" data-label="Course"><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
+          <td class="nowrap c-detail" data-label="Year"><?= e($r['year_level'] ?: '—') ?></td>
+          <td class="c-hide-sm" data-label="Type"><?= type_badge($r['type_name']) ?></td>
+          <td class="c-conf c-hide-sm" data-label="Conference"><?= e($r['conference_title']) ?></td>
+          <td class="nowrap small c-hide-sm" data-label="Registered"><?= e(fmt_datetime($r['registered_at'])) ?></td>
+          <td class="c-status" data-label="Status"><?= status_badge($r['status']) ?></td>
+          <td class="c-view"><a class="btn btn-primary btn-sm" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><i class="bi bi-eye"></i> View</a></td>
           <td class="text-right c-actions">
             <div class="dropdown">
               <button class="btn btn-ghost btn-icon" data-dropdown aria-label="Actions"><i class="bi bi-three-dots-vertical"></i></button>
