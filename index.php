@@ -19,6 +19,8 @@ public_header('Welcome', ['wide' => true]);
     <i class="bi bi-qr-code-scan fl i5"></i>
     <i class="bi bi-ticket-perforated fl i6"></i>
   </div>
+  <!-- pixel mascot: sits on the books, runs, waves, does something funny, then sits again -->
+  <div class="mascot-stage" aria-hidden="true"><canvas id="mascot"></canvas></div>
   <div class="l-wrap">
     <h1>Student Registration</h1>
     <p>Register for school events in under 2 minutes, right from your phone.</p>
@@ -50,4 +52,4 @@ public_header('Welcome', ['wide' => true]);
     <div class="l-organizer"><a href="<?= e(url('admin/login.php')) ?>"><i class="bi bi-shield-lock"></i> Organizer login</a></div>
   </div>
 </section>
-<?php public_footer(); ?>
+<?php public_footer(['js/mascot.js']); ?>
