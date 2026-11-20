@@ -9,6 +9,16 @@ require __DIR__ . '/includes/public_layout.php';
 public_header('Welcome', ['wide' => true]);
 ?>
 <section class="l-hero">
+  <!-- animated background (decorative only) -->
+  <div class="hero-bg" aria-hidden="true">
+    <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+    <i class="bi bi-qr-code fl i1"></i>
+    <i class="bi bi-mortarboard fl i2"></i>
+    <i class="bi bi-calendar-event fl i3"></i>
+    <i class="bi bi-person-check fl i4"></i>
+    <i class="bi bi-qr-code-scan fl i5"></i>
+    <i class="bi bi-ticket-perforated fl i6"></i>
+  </div>
   <div class="l-wrap">
     <h1>Student Registration</h1>
     <p>Register for school events in under 2 minutes, right from your phone.</p>
