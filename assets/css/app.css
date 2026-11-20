@@ -683,3 +683,63 @@ textarea.input { min-height: 90px; resize: vertical; }
 @media (max-width: 560px) { .sheet-hero { grid-template-columns: 1fr; text-align: center; } }
 
 @media (prefers-reduced-motion: reduce) { .m-dots i { animation: none; } }
+
+/* ==================================================================
+   PARTICIPANT RECORDS: compact filters, totals, phone cards
+   ================================================================== */
+.filter-card { padding: .9rem 1rem; }
+.search-row { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+.search-box { position: relative; flex: 1 1 260px; min-width: 0; }
+.search-box i { position: absolute; left: .7rem; top: 50%; transform: translateY(-50%); color: var(--gray-400); pointer-events: none; }
+.search-box .input { padding-left: 2.1rem; }
+.more-filters { margin-top: .9rem; padding-top: .9rem; border-top: 1px dashed var(--gray-200); }
+.more-filters[hidden] { display: none; }
+.count-pill { display: inline-grid; place-items: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; background: var(--primary); color: #fff; font-size: .7rem; margin-left: .2rem; }
+
+.rec-totals { display: flex; flex-wrap: wrap; gap: .5rem 1.6rem; align-items: center; padding: .85rem 1.25rem; border-bottom: 1px solid var(--gray-200); background: linear-gradient(90deg, var(--primary-50), #fff); border-radius: var(--radius) var(--radius) 0 0; }
+.rec-totals > div { display: flex; align-items: baseline; gap: .4rem; }
+.rec-totals strong { font-size: 1.05rem; color: var(--navy); }
+.rec-totals span { font-size: .8rem; color: var(--gray-500); display: inline-flex; align-items: center; gap: .3rem; }
+.rec-totals .rt-main strong { font-size: 1.5rem; color: var(--primary-600); }
+.rec-totals .rt-main span { font-weight: 600; color: var(--navy); }
+.show-sm { display: none; }
+
+@media (max-width: 640px) {
+  .show-sm { display: flex; }
+  .filter-card { padding: .75rem; }
+  .search-box { flex-basis: 100%; }
+  .more-filters { grid-template-columns: 1fr 1fr; gap: .6rem; }
+  .more-filters .filter-actions { grid-column: 1 / -1; }
+  .more-filters .filter-actions .btn { flex: 1; }
+
+  .rec-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem .4rem; padding: .8rem; text-align: center; }
+  .rec-totals > div { flex-direction: column; align-items: center; gap: 0; }
+  .rec-totals .rt-main { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: .5rem; align-items: baseline; padding-bottom: .4rem; border-bottom: 1px dashed var(--gray-200); }
+  .rec-totals span { font-size: .72rem; }
+
+  .rec-toolbar { padding: .75rem; }
+  .rec-toolbar > .flex { width: 100%; gap: .5rem; }
+  .rec-toolbar select[name="bulk"] { flex: 1 1 100%; width: 100% !important; }
+  .rec-toolbar > .flex .btn { flex: 1 1 auto; }
+
+  /* each record becomes a card */
+  .table-cards, .table-cards tbody { display: block; }
+  .table-cards thead { display: none; }
+  .table-cards tbody { padding: .6rem; }
+  .table-cards tr {
+    position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: .1rem .6rem;
+    border: 1px solid var(--gray-200); border-radius: 12px; padding: .7rem .75rem .6rem; margin-bottom: .6rem; background: #fff;
+  }
+  .table-cards tbody tr:hover { background: #fff; }
+  .table-cards td { border: 0 !important; padding: .3rem 0 !important; min-width: 0 !important; white-space: normal; font-size: .86rem; }
+  .table-cards td[data-label]::before {
+    content: attr(data-label); display: block; font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--gray-400);
+  }
+  .table-cards .c-check { position: absolute; top: .8rem; left: .75rem; padding: 0 !important; }
+  .table-cards .c-actions { position: absolute; top: .35rem; right: .35rem; padding: 0 !important; }
+  .table-cards .c-name { order: -1; grid-column: 1 / -1; padding: 0 2.4rem .35rem 1.7rem !important; font-size: 1rem; border-bottom: 1px dashed var(--gray-200) !important; margin-bottom: .2rem; }
+  .table-cards .c-conf { grid-column: 1 / -1; }
+  .table-cards .table-empty { display: block; }
+  .table-cards tr:has(.table-empty) { display: block; border: 0; }
+}
+@media (max-width: 640px) { .table-wrap:has(.table-cards) { overflow: visible; } }

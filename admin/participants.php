@@ -15,6 +15,10 @@ $base = ' FROM conference_registrations r
 
 $perPage = in_array((int) get('per_page'), [10, 25, 50, 100], true) ? (int) get('per_page') : 25;
 $total = (int) q_val('SELECT COUNT(*)' . $base, $params);
+$sumRow = q_row("SELECT SUM(r.status <> 'cancelled') AS registered, SUM(r.status = 'confirmed') AS confirmed,
+                        SUM(r.status = 'pending') AS pending, SUM(r.status = 'cancelled') AS cancelled,
+                        SUM(ar.id IS NOT NULL) AS checked_in" . $base, $params);
+$sumRow = array_map('intval', $sumRow ?: []);
 $p = paginate($total, $perPage, (int) get('page', '1'));
 $rows = q_all(registration_select_sql() . ' WHERE 1=1' . $where . " ORDER BY $order LIMIT {$p['per_page']} OFFSET {$p['offset']}", $params);
 
@@ -57,11 +61,22 @@ admin_header('Participant Records', 'participants');
   </div>
 </div>
 
+<?php $moreActive = count(array_filter(array_intersect_key($_GET, array_flip(['conference', 'course', 'year', 'type', 'status', 'from', 'to', 'attendance'])), fn($v) => $v !== '')); ?>
 <div class="card mb-2">
-  <div class="card-body">
-    <form method="get" class="filters">
+  <div class="card-body filter-card">
+    <form method="get">
       <?php if ($archived): ?><input type="hidden" name="archived" value="1"><?php endif; ?>
-      <div class="field" style="grid-column:span 2;min-width:0"><label for="f-q">Search</label><input class="input input-sm" id="f-q" name="q" value="<?= e(get('q')) ?>" placeholder="Student ID, name, reference no., contact…"></div>
+      <input type="hidden" name="sort" value="<?= e(get('sort')) ?>"><input type="hidden" name="dir" value="<?= e(get('dir')) ?>">
+      <div class="search-row">
+        <div class="search-box"><i class="bi bi-search"></i><input class="input input-sm" id="f-q" name="q" value="<?= e(get('q')) ?>" placeholder="Search Student ID, name, reference no., contact…" aria-label="Search"></div>
+        <button class="btn btn-primary btn-sm" aria-label="Search"><i class="bi bi-search"></i><span class="hide-sm"> Search</span></button>
+        <button type="button" class="btn btn-outline btn-sm" aria-controls="more-filters" aria-expanded="<?= $moreActive ? 'true' : 'false' ?>"
+                onclick="var f=document.getElementById('more-filters');f.hidden=!f.hidden;this.setAttribute('aria-expanded',!f.hidden)">
+          <i class="bi bi-sliders"></i> Filters<?= $moreActive ? ' <span class="count-pill">' . $moreActive . '</span>' : '' ?>
+        </button>
+        <?php if ($moreActive || get('q') !== ''): ?><a class="btn btn-ghost btn-sm" href="?<?= $archived ? 'archived=1' : '' ?>">Reset</a><?php endif; ?>
+      </div>
+      <div class="filters more-filters" id="more-filters"<?= $moreActive ? '' : ' hidden' ?>>
       <div class="field"><label for="f-conf">Conference</label><select class="input input-sm" id="f-conf" name="conference"><option value="">All</option><?php foreach ($confs as $c): ?><option value="<?= (int) $c['id'] ?>" <?= get('conference') === (string) $c['id'] ? 'selected' : '' ?>><?= e($c['title']) ?></option><?php endforeach; ?></select></div>
       <div class="field"><label for="f-course">Course / Program</label><select class="input input-sm" id="f-course" name="course"><option value="">All</option><?php foreach ($courses as $c): ?><option value="<?= (int) $c['id'] ?>" <?= get('course') === (string) $c['id'] ? 'selected' : '' ?>><?= e($c['code']) ?></option><?php endforeach; ?><option value="other" <?= get('course') === 'other' ? 'selected' : '' ?>>Other</option></select></div>
       <div class="field"><label for="f-year">Year Level</label><select class="input input-sm" id="f-year" name="year"><option value="">All</option><?php foreach (year_levels() as $y): ?><option <?= get('year') === $y ? 'selected' : '' ?>><?= e($y) ?></option><?php endforeach; ?></select></div>
@@ -70,10 +85,10 @@ admin_header('Participant Records', 'participants');
       <div class="field"><label for="f-att">Attendance</label><select class="input input-sm" id="f-att" name="attendance"><option value="">All</option><option value="in" <?= get('attendance') === 'in' ? 'selected' : '' ?>>Checked in</option><option value="out" <?= get('attendance') === 'out' ? 'selected' : '' ?>>Not yet checked in</option></select></div>
       <div class="field"><label for="f-from">Registered From</label><input class="input input-sm" type="date" id="f-from" name="from" value="<?= e(get('from')) ?>"></div>
       <div class="field"><label for="f-to">Registered To</label><input class="input input-sm" type="date" id="f-to" name="to" value="<?= e(get('to')) ?>"></div>
-      <input type="hidden" name="sort" value="<?= e(get('sort')) ?>"><input type="hidden" name="dir" value="<?= e(get('dir')) ?>">
-      <div class="filter-actions">
-        <button class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i> Apply</button>
-        <a class="btn btn-outline btn-sm" href="?<?= $archived ? 'archived=1' : '' ?>">Reset</a>
+        <div class="filter-actions">
+          <button class="btn btn-primary btn-sm"><i class="bi bi-funnel"></i> Apply filters</button>
+          <a class="btn btn-outline btn-sm" href="?<?= $archived ? 'archived=1' : '' ?>">Reset</a>
+        </div>
       </div>
     </form>
   </div>
@@ -85,8 +100,16 @@ admin_header('Participant Records', 'participants');
 </form>
 
 <div class="card">
-  <div class="card-header">
+  <div class="rec-totals">
+    <div class="rt-main"><strong><?= number_format($sumRow['registered'] ?? 0) ?></strong><span>Total registered</span></div>
+    <div><strong><?= number_format($sumRow['confirmed'] ?? 0) ?></strong><span><i class="dot" style="color:var(--success)"></i> Confirmed</span></div>
+    <div><strong><?= number_format($sumRow['pending'] ?? 0) ?></strong><span><i class="dot" style="color:var(--warning)"></i> Pending</span></div>
+    <div><strong><?= number_format($sumRow['cancelled'] ?? 0) ?></strong><span><i class="dot" style="color:var(--danger)"></i> Cancelled</span></div>
+    <div><strong><?= number_format($sumRow['checked_in'] ?? 0) ?></strong><span><i class="dot" style="color:var(--primary)"></i> Checked in</span></div>
+  </div>
+  <div class="card-header rec-toolbar">
     <div class="flex">
+      <label class="check show-sm"><input type="checkbox" onclick="document.querySelectorAll('.row-check').forEach(function(c){c.checked=this.checked}.bind(this))"> Select all</label>
       <select class="input input-sm" form="act-form" name="bulk" style="width:auto" aria-label="Bulk action">
         <option value="">Bulk action…</option>
         <option value="confirm">Confirm registration</option>
@@ -106,7 +129,7 @@ admin_header('Participant Records', 'participants');
     </form>
   </div>
   <div class="table-wrap">
-    <table class="table table-compact">
+    <table class="table table-compact table-cards">
       <thead>
         <tr>
           <th style="width:36px"><input type="checkbox" aria-label="Select all" onclick="document.querySelectorAll('.row-check').forEach(function(c){c.checked=this.checked}.bind(this))"></th>
@@ -126,17 +149,17 @@ admin_header('Participant Records', 'participants');
       <?php if (!$rows) echo empty_row(11, 'No participant records match your filters.', 'people'); ?>
       <?php foreach ($rows as $r): $id = (int) $r['id']; ?>
         <tr>
-          <td><input type="checkbox" class="row-check" form="act-form" name="ids[]" value="<?= $id ?>" aria-label="Select"></td>
-          <td class="nowrap"><?= e($r['id_number'] ?: '—') ?><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
-          <td><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><?= e(full_name($r)) ?></a><?= $r['checked_in_at'] ? '<div class="cell-sub" style="color:var(--success)"><i class="bi bi-person-check-fill"></i> Present</div>' : '' ?></td>
-          <td class="nowrap"><?= e($r['contact_number']) ?></td>
-          <td><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
-          <td class="nowrap"><?= e($r['year_level'] ?: '—') ?></td>
-          <td><?= type_badge($r['type_name']) ?></td>
-          <td><?= e($r['conference_title']) ?></td>
-          <td class="nowrap small"><?= e(fmt_datetime($r['registered_at'])) ?></td>
-          <td><?= status_badge($r['status']) ?></td>
-          <td class="text-right">
+          <td class="c-check"><input type="checkbox" class="row-check" form="act-form" name="ids[]" value="<?= $id ?>" aria-label="Select"></td>
+          <td class="nowrap c-id" data-label="Student ID"><?= e($r['id_number'] ?: '—') ?><div class="cell-sub"><?= e($r['reference_no']) ?></div></td>
+          <td class="c-name"><a class="cell-title" href="<?= e(url('admin/participant.php?id=' . $id)) ?>"><?= e(full_name($r)) ?></a><?= $r['checked_in_at'] ? '<div class="cell-sub" style="color:var(--success)"><i class="bi bi-person-check-fill"></i> Present</div>' : '' ?></td>
+          <td class="nowrap" data-label="Contact"><?= e($r['contact_number']) ?></td>
+          <td data-label="Course"><?= e($r['course_code'] ?: ($r['course_other'] ?: '—')) ?></td>
+          <td class="nowrap" data-label="Year"><?= e($r['year_level'] ?: '—') ?></td>
+          <td data-label="Type"><?= type_badge($r['type_name']) ?></td>
+          <td class="c-conf" data-label="Conference"><?= e($r['conference_title']) ?></td>
+          <td class="nowrap small" data-label="Registered"><?= e(fmt_datetime($r['registered_at'])) ?></td>
+          <td data-label="Status"><?= status_badge($r['status']) ?></td>
+          <td class="text-right c-actions">
             <div class="dropdown">
               <button class="btn btn-ghost btn-icon" data-dropdown aria-label="Actions"><i class="bi bi-three-dots-vertical"></i></button>
               <div class="dropdown-menu">
