@@ -73,7 +73,7 @@ admin_header($c['title'], 'conferences', 'Conference Management');
         <div><dt>Registration Opens</dt><dd><?= e($c['registration_open'] ? fmt_datetime($c['registration_open']) : 'Immediately') ?></dd></div>
         <div><dt>Registration Closes</dt><dd><?= e($c['registration_close'] ? fmt_datetime($c['registration_close']) : 'No deadline') ?></dd></div>
         <div><dt>Participant Types</dt><dd><?= e(implode(', ', array_keys($types))) ?></dd></div>
-        <div><dt>New Registrations</dt><dd><?= $c['auto_confirm'] ? 'Automatically confirmed' : 'Pending until confirmed' ?></dd></div>
+        <div><dt>New Registrations</dt><dd>Automatically confirmed</dd></div>
         <div class="full"><dt>Attendance Categories</dt><dd><?= e(implode(' · ', conference_categories($c)) ?: '—') ?></dd></div>
         <div><dt>Assigned Conference Admins</dt><dd><?= $admins ? e(implode(', ', array_column($admins, 'full_name'))) : '<span class="muted">Super Admins only</span>' ?></dd></div>
         <div><dt>Created</dt><dd><?= e(fmt_datetime($c['created_at'])) ?><?= $c['creator'] ? ' by ' . e($c['creator']) : '' ?></dd></div>

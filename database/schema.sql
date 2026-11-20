@@ -102,7 +102,7 @@ CREATE TABLE conferences (
     allow_faculty          TINYINT(1) NOT NULL DEFAULT 1,
     allow_guest            TINYINT(1) NOT NULL DEFAULT 1,
     attendance_categories  VARCHAR(500) NOT NULL DEFAULT 'Whole Day,Morning Session Only,Afternoon Session Only',
-    auto_confirm           TINYINT(1) NOT NULL DEFAULT 0,
+    auto_confirm           TINYINT(1) NOT NULL DEFAULT 1,
     registration_enabled   TINYINT(1) NOT NULL DEFAULT 1,
     is_archived            TINYINT(1) NOT NULL DEFAULT 0,
     created_by             INT UNSIGNED NULL,

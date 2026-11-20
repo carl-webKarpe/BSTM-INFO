@@ -30,7 +30,7 @@ $d = $conf ?: [
     'title' => '', 'description' => '', 'venue' => '', 'academic_year_id' => q_val('SELECT id FROM academic_years WHERE is_current = 1'),
     'start_datetime' => '', 'end_datetime' => '', 'registration_open' => '', 'registration_close' => '',
     'participant_limit' => '', 'allow_student' => 1, 'allow_faculty' => 1, 'allow_guest' => 1,
-    'attendance_categories' => 'Whole Day,Morning Session Only,Afternoon Session Only', 'auto_confirm' => 0, 'registration_enabled' => 1,
+    'attendance_categories' => 'Whole Day,Morning Session Only,Afternoon Session Only', 'auto_confirm' => 1, 'registration_enabled' => 1,
 ];
 $errors = [];
 
@@ -45,9 +45,10 @@ if (is_post()) {
     $d['registration_open'] = $dtOut(post('registration_open'));
     $d['registration_close'] = $dtOut(post('registration_close'));
     $d['participant_limit'] = post('participant_limit');
-    foreach (['allow_student', 'allow_faculty', 'allow_guest', 'auto_confirm', 'registration_enabled'] as $k) {
+    foreach (['allow_student', 'allow_faculty', 'allow_guest', 'registration_enabled'] as $k) {
         $d[$k] = isset($_POST[$k]) ? 1 : 0;
     }
+    $d['auto_confirm'] = 1; // registrations are always confirmed automatically
     $cats = array_unique(array_filter(array_map(fn($s) => trim(str_replace(',', ' ', $s)), preg_split('/\r\n|\r|\n/', post('attendance_categories'))), 'strlen'));
     $d['attendance_categories'] = implode(',', $cats);
     $assigned = array_map('intval', (array) ($_POST['admins'] ?? []));
@@ -146,7 +147,6 @@ admin_header($conf ? 'Edit Conference' : 'New Conference', 'conferences', 'Confe
           </div>
           <div class="field full">
             <label class="check"><input type="checkbox" name="registration_enabled" <?= $chk('registration_enabled') ?>> <span><strong>Registration enabled</strong><br><span class="help">Turn off to stop accepting registrations at any time.</span></span></label>
-            <label class="check mt-1"><input type="checkbox" name="auto_confirm" <?= $chk('auto_confirm') ?>> <span><strong>Automatically confirm new registrations</strong><br><span class="help">If off, new registrations are “Pending” until an admin confirms them.</span></span></label>
           </div>
         </div>
       </div>

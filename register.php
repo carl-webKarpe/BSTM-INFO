@@ -257,7 +257,7 @@ if ($action === 'review') {
 
             $ref    = generate_reference();
             $key    = random_token();
-            $status = $conf['auto_confirm'] ? 'confirmed' : 'pending';
+            $status = 'confirmed'; // registrations are confirmed automatically
             q('INSERT INTO conference_registrations
                  (reference_no, access_key, attendance_token, conference_id, student_id, qr_code_id, participant_type_id,
                   school_id, school_other, course_id, course_other, year_level, section, attendance_category,
