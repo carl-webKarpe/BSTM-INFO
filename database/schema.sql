@@ -250,6 +250,14 @@ INSERT INTO participant_types (code, name, is_active) VALUES
 ('faculty', 'Faculty', 1),
 ('guest',   'Guest',   1);
 
+INSERT INTO courses (code, name) VALUES
+('BSTM',   'Bachelor of Science in Tourism Management'),
+('BSIT',   'Bachelor of Science in Information Technology'),
+('BSOA',   'Bachelor of Science in Office Administration'),
+('BSCRIM', 'Bachelor of Science in Criminology'),
+('BSAIS',  'Bachelor of Science in Accounting Information System'),
+('CTE',    'College of Teacher Education');
+
 INSERT INTO academic_years (name, is_current) VALUES
 ('2025-2026', 0),
 ('2026-2027', 1);

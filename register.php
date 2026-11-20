@@ -124,36 +124,13 @@ function validate_registration(array $in, array $conf, array $types, array $scho
     $d['year_level']   = $s('year_level');
     $d['section']      = $s('section');
 
-    // School (required for students & faculty, optional for guests)
-    if ($d['school_id'] === 'other') {
-        if ($d['school_other'] === '') {
-            $err['school_other'] = 'Please type the name of your school / institution.';
-        } elseif (mb_strlen($d['school_other']) > 190) {
-            $err['school_other'] = 'School name is too long.';
-        }
-    } elseif ($d['school_id'] !== '' && isset($schoolMap[$d['school_id']])) {
-        $d['school_other'] = '';
-    } else {
-        $d['school_id'] = '';
-        $d['school_other'] = '';
-        if ($type !== 'guest' && $type !== '') {
-            $err['school_id'] = 'Please select your school / institution.';
-        }
-    }
+    // School / Institution is no longer asked on the form.
+    $d['school_id'] = $d['school_other'] = '';
 
-    // Course / department
-    if ($type === 'guest') {
-        $d['course_id'] = $d['course_other'] = '';
-    } elseif ($d['course_id'] === 'other') {
-        if ($d['course_other'] === '') {
-            $err['course_other'] = 'Please type your ' . ($type === 'faculty' ? 'department' : 'course / program') . '.';
-        } elseif (mb_strlen($d['course_other']) > 190) {
-            $err['course_other'] = 'Course name is too long.';
-        }
-    } elseif ($d['course_id'] !== '' && isset($courseMap[$d['course_id']])) {
-        $d['course_other'] = '';
-    } else {
-        $d['course_id'] = $d['course_other'] = '';
+    // Course / Program (required for students, optional department for faculty, hidden for guests)
+    $d['course_other'] = '';
+    if ($type === 'guest' || !isset($courseMap[$d['course_id']])) {
+        $d['course_id'] = '';
         if ($type === 'student') {
             $err['course_id'] = 'Please select your course / program.';
         }
@@ -357,8 +334,7 @@ public_header('Register · ' . $conf['title']);
 <?php if ($view === 'review'): ?>
   <?php
     $t = $data['type'];
-    $schoolTxt = $data['school_id'] === 'other' ? $data['school_other'] : ($schoolMap[$data['school_id']] ?? '');
-    $courseTxt = $data['course_id'] === 'other' ? $data['course_other'] : ($courseMap[$data['course_id']] ?? '');
+    $courseTxt = $courseMap[$data['course_id']] ?? '';
     $dash = fn($v) => $v !== '' && $v !== null ? e($v) : '<span class="muted">—</span>';
   ?>
   <div class="alert alert-info"><i class="bi bi-eye"></i><div><strong>Please review your information.</strong> If something is wrong, tap <em>Edit Information</em>. Once everything is correct, tap <em>Confirm &amp; Submit</em>.</div></div>
@@ -378,14 +354,12 @@ public_header('Register · ' . $conf['title']);
     </div>
   </div>
 
+  <?php if ($t !== 'guest'): ?>
   <div class="section">
     <div class="section-head"><span class="icon"><i class="bi bi-mortarboard"></i></span><div><h2>Academic Information</h2></div></div>
     <div class="section-body">
       <dl class="info-list">
-        <div><dt><?= $t === 'guest' ? 'School / Organization' : 'School / Institution' ?></dt><dd><?= $dash($schoolTxt) ?></dd></div>
-        <?php if ($t !== 'guest'): ?>
-          <div><dt><?= $t === 'faculty' ? 'Department / Program' : 'Course / Program' ?></dt><dd><?= $dash($courseTxt) ?></dd></div>
-        <?php endif; ?>
+        <div><dt><?= $t === 'faculty' ? 'Department / Program' : 'Course / Program' ?></dt><dd><?= $dash($courseTxt) ?></dd></div>
         <?php if ($t === 'student'): ?>
           <div><dt>Year Level</dt><dd><?= e($data['year_level']) ?></dd></div>
           <div><dt>Section</dt><dd><?= $dash($data['section']) ?></dd></div>
@@ -393,6 +367,7 @@ public_header('Register · ' . $conf['title']);
       </dl>
     </div>
   </div>
+  <?php endif; ?>
 
   <div class="section">
     <div class="section-head"><span class="icon"><i class="bi bi-people"></i></span><div><h2>Conference Participant Information</h2></div></div>
@@ -481,41 +456,19 @@ public_header('Register · ' . $conf['title']);
     </div>
 
     <!-- SECTION 3 – ACADEMIC INFORMATION -->
-    <div class="section">
-      <div class="section-head"><span class="icon"><i class="bi bi-mortarboard"></i></span><div><h2>Academic Information</h2><p data-show="student">Your school, course and year level</p><p data-show="faculty">Your school and department</p><p data-show="guest">Optional for guests</p></div></div>
+    <div class="section" data-show="student,faculty">
+      <div class="section-head"><span class="icon"><i class="bi bi-mortarboard"></i></span><div><h2>Academic Information</h2><p data-show="student">Your course and year level</p><p data-show="faculty">Your department</p></div></div>
       <div class="section-body">
         <div class="form-grid">
-          <div class="field full">
-            <label for="school_id"><span data-label-student="School / Institution" data-label-faculty="School / Institution" data-label-guest="School / Organization">School / Institution</span><span class="req" data-req-for="student,faculty">*</span><span class="opt" data-show="guest">(optional)</span></label>
-            <select class="input<?= $inv('school_id') ?>" id="school_id" name="school_id" data-required-for="student,faculty" data-other="school_other_wrap">
-              <option value="">— Select —</option>
-              <?php foreach ($schools as $s): ?>
-                <option value="<?= (int) $s['id'] ?>" <?= ($data['school_id'] ?? '') == $s['id'] ? 'selected' : '' ?>><?= e($s['name']) ?></option>
-              <?php endforeach; ?>
-              <option value="other" <?= ($data['school_id'] ?? '') === 'other' ? 'selected' : '' ?>>Other (not in the list)</option>
-            </select>
-            <?= $err('school_id') ?>
-          </div>
-          <div class="field full <?= ($data['school_id'] ?? '') === 'other' ? '' : 'hidden' ?>" id="school_other_wrap">
-            <label for="school_other">Name of School / Organization<span class="req">*</span></label>
-            <input class="input<?= $inv('school_other') ?>" id="school_other" name="school_other" value="<?= $val('school_other') ?>" maxlength="190">
-            <?= $err('school_other') ?>
-          </div>
           <div class="field full" data-show="student,faculty">
             <label for="course_id"><span data-label-student="Course / Program" data-label-faculty="Department / Program">Course / Program</span><span class="req" data-req-for="student">*</span><span class="opt" data-show="faculty">(optional)</span></label>
-            <select class="input<?= $inv('course_id') ?>" id="course_id" name="course_id" data-required-for="student" data-other="course_other_wrap">
+            <select class="input<?= $inv('course_id') ?>" id="course_id" name="course_id" data-required-for="student">
               <option value="">— Select —</option>
               <?php foreach ($courses as $c): ?>
                 <option value="<?= (int) $c['id'] ?>" <?= ($data['course_id'] ?? '') == $c['id'] ? 'selected' : '' ?>><?= e($c['code'] . ' – ' . $c['name']) ?></option>
               <?php endforeach; ?>
-              <option value="other" <?= ($data['course_id'] ?? '') === 'other' ? 'selected' : '' ?>>Other (not in the list)</option>
             </select>
             <?= $err('course_id') ?>
-          </div>
-          <div class="field full <?= ($data['course_id'] ?? '') === 'other' ? '' : 'hidden' ?>" id="course_other_wrap">
-            <label for="course_other">Please specify<span class="req">*</span></label>
-            <input class="input<?= $inv('course_other') ?>" id="course_other" name="course_other" value="<?= $val('course_other') ?>" maxlength="190">
-            <?= $err('course_other') ?>
           </div>
           <div class="field" data-show="student">
             <label for="year_level">Year Level<span class="req">*</span></label>

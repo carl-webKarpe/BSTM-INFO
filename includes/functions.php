@@ -465,7 +465,7 @@ function lookup_schools(bool $activeOnly = true): array
 
 function lookup_courses(bool $activeOnly = true): array
 {
-    return q_all('SELECT * FROM courses' . ($activeOnly ? ' WHERE is_active = 1' : '') . ' ORDER BY code');
+    return q_all('SELECT * FROM courses' . ($activeOnly ? ' WHERE is_active = 1' : '') . ' ORDER BY id');
 }
 
 function lookup_academic_years(): array

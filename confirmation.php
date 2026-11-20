@@ -80,7 +80,7 @@ public_header('Registration ' . $reg['reference_no']);
       <div><dt>ID Number</dt><dd><?= e($reg['id_number'] ?: '—') ?></dd></div>
       <div><dt>Participant Type</dt><dd><?= e($reg['type_name']) ?></dd></div>
       <div><dt>Contact Number</dt><dd><?= e($reg['contact_number']) ?></dd></div>
-      <div><dt>School / Institution</dt><dd><?= e(school_label($reg)) ?></dd></div>
+      <?php if (school_label($reg) !== '—'): ?><div><dt>School / Institution</dt><dd><?= e(school_label($reg)) ?></dd></div><?php endif; ?>
       <?php if ($reg['type_code'] !== 'guest'): ?><div><dt><?= $reg['type_code'] === 'faculty' ? 'Department' : 'Course / Program' ?></dt><dd><?= e(course_label($reg)) ?></dd></div><?php endif; ?>
       <?php if ($reg['year_level']): ?><div><dt>Year Level &amp; Section</dt><dd><?= e($reg['year_level'] . ($reg['section'] ? ' – ' . $reg['section'] : '')) ?></dd></div><?php endif; ?>
     </dl>
