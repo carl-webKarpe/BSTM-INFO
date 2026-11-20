@@ -313,7 +313,7 @@ function valid_name(string $s): bool
 
 function year_levels(): array
 {
-    return ['1st Year', '2nd Year', '3rd Year', '4th Year', '5th Year', 'Graduate Studies'];
+    return ['1st Year', '2nd Year', '3rd Year', '4th Year'];
 }
 
 function statuses(): array
