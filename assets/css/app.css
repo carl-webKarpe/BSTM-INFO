@@ -616,9 +616,13 @@ textarea.input { min-height: 90px; resize: vertical; }
   content: ""; position: absolute; left: 6%; right: 6%; bottom: 3px; height: 2px; border-radius: 2px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .25), transparent);
 }
-.i6 { display: none; }
+/* the floating icons stay in the text area (same layout as before the mascot);
+   the mascot runs in the strip below */
+.hero-icons { position: absolute; left: 0; right: 0; top: 0; bottom: 150px; }
+.hero-icons .i6 { bottom: -34px; }       /* ticket sits just below the buttons, as before */
 @media (max-width: 640px) {
   .l-hero { padding-bottom: 122px; }
   .mascot-stage { height: 112px; }
+  .hero-icons { bottom: 122px; }
   .i2, .i4 { display: none; }
 }

@@ -12,12 +12,14 @@ public_header('Welcome', ['wide' => true]);
   <!-- animated background (decorative only) -->
   <div class="hero-bg" aria-hidden="true">
     <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
-    <i class="bi bi-qr-code fl i1"></i>
-    <i class="bi bi-mortarboard fl i2"></i>
-    <i class="bi bi-calendar-event fl i3"></i>
-    <i class="bi bi-person-check fl i4"></i>
-    <i class="bi bi-qr-code-scan fl i5"></i>
-    <i class="bi bi-ticket-perforated fl i6"></i>
+    <div class="hero-icons">
+      <i class="bi bi-qr-code fl i1"></i>
+      <i class="bi bi-mortarboard fl i2"></i>
+      <i class="bi bi-calendar-event fl i3"></i>
+      <i class="bi bi-person-check fl i4"></i>
+      <i class="bi bi-qr-code-scan fl i5"></i>
+      <i class="bi bi-ticket-perforated fl i6"></i>
+    </div>
   </div>
   <!-- pixel mascot: sits on the books, runs, waves, does something funny, then sits again -->
   <div class="mascot-stage" aria-hidden="true"><canvas id="mascot"></canvas></div>
