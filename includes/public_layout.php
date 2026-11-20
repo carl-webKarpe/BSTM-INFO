@@ -15,19 +15,20 @@ function public_header(string $title, array $opts = []): void
 <title><?= e($title) ?> · <?= e($system) ?></title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= asset('vendor/bootstrap-icons.min.css') ?>">
 <link rel="stylesheet" href="<?= asset('css/app.css') ?>">
 </head>
-<body class="public-body" data-org="<?= e($system) ?>">
+<body class="public-body<?= !empty($opts['wide']) ? ' is-landing' : '' ?>" data-org="<?= e($system) ?>">
 <header class="public-top">
   <div class="inner">
     <a class="brand" href="<?= e(url('index.php')) ?>">
-      <span style="font-size:1.1rem"><?= e($system) ?></span>
+      <span class="brand-text"><?= e($system) ?></span>
     </a>
+    <a class="top-link" href="<?= e(url('lookup.php')) ?>"><i class="bi bi-search"></i><span>Find my registration</span></a>
   </div>
 </header>
-<main class="public-main">
+<main class="<?= !empty($opts['wide']) ? 'landing' : 'public-main' ?>">
 <?= render_flashes() ?>
 <?php
 }
