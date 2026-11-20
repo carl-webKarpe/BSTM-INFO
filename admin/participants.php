@@ -95,6 +95,9 @@ admin_header('Participant Records', 'participants');
         <option value="<?= $archived ? 'restore' : 'archive' ?>"><?= $archived ? 'Restore' : 'Archive' ?></option>
       </select>
       <button class="btn btn-outline btn-sm" form="act-form" name="do_bulk" value="1" data-confirm="Apply this action to all selected records?">Apply to selected</button>
+      <?php if (is_super()): ?>
+        <button class="btn btn-danger btn-sm" form="act-form" name="bulk_delete" value="1" data-confirm="Permanently DELETE all selected participant records? This cannot be undone."><i class="bi bi-trash"></i> Delete selected</button>
+      <?php endif; ?>
     </div>
     <form method="get" class="flex">
       <?php foreach (array_diff_key($_GET, ['per_page' => 1, 'page' => 1]) as $k => $v): if (is_string($v)): ?><input type="hidden" name="<?= e($k) ?>" value="<?= e($v) ?>"><?php endif; endforeach; ?>
@@ -148,6 +151,9 @@ admin_header('Participant Records', 'participants');
                   <button form="act-form" name="single" value="restore:<?= $id ?>"><i class="bi bi-box-arrow-up"></i> Restore record</button>
                 <?php else: ?>
                   <button form="act-form" name="single" value="archive:<?= $id ?>" data-confirm="Archive this participant record?"><i class="bi bi-archive"></i> Archive record</button>
+                <?php endif; ?>
+                <?php if (is_super()): ?>
+                  <button form="act-form" name="single" value="delete:<?= $id ?>" class="danger" data-confirm="Permanently DELETE this participant record? This cannot be undone."><i class="bi bi-trash"></i> Delete record</button>
                 <?php endif; ?>
               </div>
             </div>

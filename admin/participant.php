@@ -88,6 +88,7 @@ admin_header('Participant Profile', 'participants', 'Participant Records');
         <?php if ($r['status'] !== 'pending'): ?><button class="btn btn-outline btn-sm" name="single" value="pending:<?= $id ?>"><i class="bi bi-hourglass-split"></i> Mark Pending</button><?php endif; ?>
         <?php if ($r['status'] !== 'cancelled'): ?><button class="btn btn-outline btn-sm" name="single" value="cancel:<?= $id ?>" data-confirm="Cancel this registration?" style="color:var(--danger)"><i class="bi bi-x-circle"></i> Cancel</button><?php endif; ?>
         <button class="btn btn-outline btn-sm" name="single" value="<?= $r['is_archived'] ? 'restore' : 'archive' ?>:<?= $id ?>" <?= $r['is_archived'] ? '' : 'data-confirm="Archive this participant record?"' ?>><i class="bi bi-archive"></i> <?= $r['is_archived'] ? 'Restore' : 'Archive' ?></button>
+        <?php if (is_super()): ?><button class="btn btn-danger btn-sm" name="single" value="delete:<?= $id ?>" data-confirm="Permanently DELETE this participant record? This cannot be undone."><i class="bi bi-trash"></i> Delete</button><?php endif; ?>
       </form>
       <div class="dropdown">
         <button class="btn btn-primary btn-sm" data-dropdown><i class="bi bi-download"></i> Print / Export</button>

@@ -17,6 +17,9 @@ $ids = [];
 if (post('single') !== '' && strpos(post('single'), ':') !== false) {
     [$action, $id] = explode(':', post('single'), 2);
     $ids = [(int) $id];
+} elseif (post('bulk_delete') !== '') {
+    $action = 'delete';
+    $ids = array_map('intval', (array) ($_POST['ids'] ?? []));
 } elseif (post('do_bulk') !== '') {
     $action = post('bulk');
     $ids = array_map('intval', (array) ($_POST['ids'] ?? []));
@@ -25,8 +28,16 @@ $ids = array_values(array_filter(array_unique($ids)));
 
 $labels = [
     'confirm' => 'confirmed', 'pending' => 'marked as pending', 'cancel' => 'cancelled',
-    'archive' => 'archived', 'restore' => 'restored',
+    'archive' => 'archived', 'restore' => 'restored', 'delete' => 'deleted',
 ];
+if ($action === 'delete' && !is_super()) {
+    flash('error', 'Only a Super Admin can delete participant records.');
+    redirect($return);
+}
+// The profile page of a deleted record no longer exists.
+if ($action === 'delete' && strpos($return, '/admin/participant.php') !== false) {
+    $return = url('admin/participants.php');
+}
 if (!isset($labels[$action])) {
     flash('error', 'Please choose an action.');
     redirect($return);
@@ -37,7 +48,7 @@ if (!$ids) {
 }
 
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
-$rows = q_all("SELECT r.id, r.reference_no, r.conference_id, s.last_name, s.first_name FROM conference_registrations r
+$rows = q_all("SELECT r.id, r.reference_no, r.conference_id, r.student_id, s.last_name, s.first_name FROM conference_registrations r
                JOIN students s ON s.id = r.student_id WHERE r.id IN ($placeholders)" . conf_scope('r.conference_id'), $ids);
 
 $done = 0;
@@ -49,6 +60,12 @@ foreach ($rows as $r) {
             $status = ['confirm' => 'confirmed', 'pending' => 'pending', 'cancel' => 'cancelled'][$action];
             $done += q('UPDATE conference_registrations SET status = ?, status_updated_at = NOW(), status_updated_by = ? WHERE id = ? AND status <> ?',
                 [$status, $admin['id'], $r['id'], $status])->rowCount();
+            break;
+        case 'delete':
+            // Removes the registration (and its attendance record). The person's details are
+            // removed too when they have no other registrations left.
+            $done += q('DELETE FROM conference_registrations WHERE id = ?', [$r['id']])->rowCount();
+            q('DELETE FROM students WHERE id = ? AND NOT EXISTS (SELECT 1 FROM conference_registrations x WHERE x.student_id = students.id)', [$r['student_id']]);
             break;
         case 'archive':
         case 'restore':
