@@ -712,10 +712,11 @@ textarea.input { min-height: 90px; resize: vertical; }
   .more-filters .filter-actions { grid-column: 1 / -1; }
   .more-filters .filter-actions .btn { flex: 1; }
 
-  .rec-totals { display: grid; grid-template-columns: repeat(4, 1fr); gap: .6rem .4rem; padding: .8rem; text-align: center; }
+  .rec-totals { display: grid; grid-template-columns: 1fr 1fr; gap: .4rem; padding: .8rem; text-align: center; }
   .rec-totals > div { flex-direction: column; align-items: center; gap: 0; }
-  .rec-totals .rt-main { grid-column: 1 / -1; flex-direction: row; justify-content: center; gap: .5rem; align-items: baseline; padding-bottom: .4rem; border-bottom: 1px dashed var(--gray-200); }
-  .rec-totals span { font-size: .72rem; }
+  .rec-totals .rt-main { border-right: 1px dashed var(--gray-200); }
+  .rec-totals strong { font-size: 1.5rem; }
+  .rec-totals span { font-size: .78rem; }
 
   .rec-toolbar { padding: .75rem; }
   .rec-toolbar > .flex { width: 100%; gap: .5rem; }

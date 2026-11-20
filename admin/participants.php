@@ -103,9 +103,6 @@ admin_header('Participant Records', 'participants');
   <div class="rec-totals">
     <div class="rt-main"><strong><?= number_format($sumRow['registered'] ?? 0) ?></strong><span>Total registered</span></div>
     <div><strong><?= number_format($sumRow['confirmed'] ?? 0) ?></strong><span><i class="dot" style="color:var(--success)"></i> Confirmed</span></div>
-    <div><strong><?= number_format($sumRow['pending'] ?? 0) ?></strong><span><i class="dot" style="color:var(--warning)"></i> Pending</span></div>
-    <div><strong><?= number_format($sumRow['cancelled'] ?? 0) ?></strong><span><i class="dot" style="color:var(--danger)"></i> Cancelled</span></div>
-    <div><strong><?= number_format($sumRow['checked_in'] ?? 0) ?></strong><span><i class="dot" style="color:var(--primary)"></i> Checked in</span></div>
   </div>
   <div class="card-header rec-toolbar">
     <div class="flex">
