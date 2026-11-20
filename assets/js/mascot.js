@@ -59,6 +59,7 @@
     px(4, 5, 8, 6, 'W'); px(4, 10, 8, 1, 'S');
     // eyes
     if (s.eyes === 'closed') { px(5, 8, 2, 1, 'E'); px(9, 8, 2, 1, 'E'); }
+    else if (s.eyes === 'down') { px(6, 8, 1, 1, 'E'); px(9, 8, 1, 1, 'E'); }
     else if (s.eyes === 'happy') { px(5, 8, 1, 1, 'E'); px(6, 7, 1, 1, 'E'); px(9, 7, 1, 1, 'E'); px(10, 8, 1, 1, 'E'); }
     else if (s.eyes === 'x') { px(5, 7, 1, 1, 'E'); px(7, 7, 1, 1, 'E'); px(6, 8, 1, 1, 'E'); px(8, 7, 1, 1, 'E'); px(10, 7, 1, 1, 'E'); px(9, 8, 1, 1, 'E'); }
     else { px(6, 7, 1, 2, 'E'); px(9, 7, 1, 2, 'E'); }
@@ -80,6 +81,18 @@
       else { px(13, 11, 1, 1, 'W'); px(14, 9, 1, 2, 'W'); px(14, 8, 1, 1, 'Y'); }
     } else if (arms === 'up') {
       px(2, 9, 1, 4, 'W'); px(13, 9, 1, 4, 'W');
+    } else if (arms === 'book') {
+      // open book held in both hands
+      px(2, 12, 12, 5, '#7c3aed');                       // cover
+      px(3, 12, 4, 4, 'W'); px(9, 12, 4, 4, 'W');        // left & right pages
+      px(7, 12, 2, 5, '#5b21b6');                        // spine
+      px(4, 13, 2, 1, 'G'); px(3, 14, 3, 1, 'G');        // text lines
+      px(10, 13, 2, 1, 'G'); px(10, 14, 3, 1, 'G');
+      if (s.page != null) {                              // a page turning right -> left
+        var pc = Math.round(12 - s.page * 9);
+        px(pc, 11 + (s.page > .3 && s.page < .7 ? 0 : 1), 1, 4, 'S');
+      }
+      px(1, 14, 1, 2, 'W'); px(14, 14, 1, 2, 'W');       // hands
     } else if (arms === 'dance') {
       if (f % 2) { px(2, 9, 1, 4, 'W'); px(12, 13, 1, 3, 'W'); }
       else { px(13, 9, 1, 4, 'W'); px(3, 13, 1, 3, 'W'); }
@@ -122,6 +135,18 @@
     ctx.fillText(text, x, by + bh / 2 + 1);
   }
 
+  function drawBulb(x, y, pop, time) {
+    var q = P * (0.6 + 0.4 * pop);
+    var b = function (c, r, w, h, k) { ctx.fillStyle = k; ctx.fillRect(Math.round(x + c * q), Math.round(y + r * q), Math.ceil(w * q), Math.ceil(h * q)); };
+    b(-2, -9, 4, 1, '#fde047'); b(-3, -8, 6, 3, '#fde047'); b(-2, -5, 4, 1, '#facc15'); // glass
+    b(-1, -7, 1, 2, '#ffffff');                                                         // shine
+    b(-1, -4, 2, 1, '#94a3b8'); b(-1, -3, 2, 1, '#64748b');                             // base
+    if (Math.floor(time * 6) % 2) {                                                     // twinkling rays
+      b(-5, -8, 1, 1, '#fef08a'); b(4, -8, 1, 1, '#fef08a'); b(0, -11, 1, 1, '#fef08a');
+      b(-4, -11, 1, 1, '#fef08a'); b(3, -11, 1, 1, '#fef08a');
+    }
+  }
+
   function drawStar(x, y, k) {
     ctx.fillStyle = k || '#facc15';
     var q = Math.max(2, P - 1);
@@ -136,7 +161,9 @@
 
   function plan() {
     queue = [
-      { a: 'sit', d: 3 },
+      { a: 'sit', d: 1.4 },
+      { a: 'study', d: 5.2 },
+      { a: 'sit', d: 0.8 },
       { a: 'hopDown', d: 0.6 },
       { a: 'run', to: leftX },
       { a: 'wave', d: 2.4 },
@@ -162,11 +189,19 @@
 
   function update(dt) {
     t += dt; clock += dt;
-    s.rot = 0; s.frame = 0;
+    s.rot = 0; s.frame = 0; s.page = null;
     var k = act.d ? Math.min(1, t / act.d) : 0;
     var blink = (clock % 2.6) < 0.12;
 
     switch (act.a) {
+      case 'study': {
+        s.x = booksX; s.y = seatY; s.face = 1;
+        var idea = t > 3.8;                              // the lightbulb moment
+        set('sit', 'book', 'sit', idea ? 'happy' : (blink ? 'closed' : 'down'), idea ? 'open' : 'smile');
+        s.page = !idea && (t % 1.3) < 0.55 ? (t % 1.3) / 0.55 : null;
+        s.y = seatY - (idea ? Math.abs(Math.sin(t * 9)) * P : 0);
+        break;
+      }
       case 'sit':
         s.x = booksX; s.y = seatY; s.face = 1;
         set('sit', 'down', 'sit', blink ? 'closed' : 'open');
@@ -249,6 +284,7 @@
     drawSprite(s);
 
     if (act && act.a === 'wave') drawBubble(s.x, s.y - 21 * P - 4, 'Hi! 👋');
+    if (act && act.a === 'study' && t > 3.8) drawBulb(s.x + 12 * P, s.y - 11 * P, Math.min(1, (t - 3.8) * 4), t);   // beside the head, inside the canvas
     if (act && act.a === 'dizzy' && t > 0.9) {
       for (var j = 0; j < 3; j++) {
         var ang = t * 5 + j * (Math.PI * 2 / 3);
